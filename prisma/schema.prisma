@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  fullname  String
+  email     String
+  password  String
+  role      Role     @default(USER)
+  lastLogin DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model LineUsers {
+  id              String    @id @default(uuid())
+  uniqueId        String?   @unique
+  fullname        String
+  studentId       String    @unique
+  profileImageUrl String?
+  isSuspended     Boolean   @default(false)
+  lastMessageSent DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+}
+
+model AutoSendMessages {
+  id        String   @id @default(uuid())
+  message   String?
+  hasSent   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model StudentInfomation {
+  id        String @id @default(uuid())
+  studentId String @unique
+  firstname String
+  lastname  String
+  //  status    String   @def
+}
+
+enum Role {
+  ADMIN
+  USER
+}
