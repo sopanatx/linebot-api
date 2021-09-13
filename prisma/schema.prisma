@@ -21,35 +21,17 @@ model Users {
   updatedAt DateTime @default(now())
 }
 
-model LineUsers {
-  id              String    @id @default(uuid())
-  uniqueId        String?   @unique
-  fullname        String
-  studentId       String    @unique
-  profileImageUrl String?
-  isSuspended     Boolean   @default(false)
-  lastMessageSent DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
-}
-
-model AutoSendMessages {
-  id        String   @id @default(uuid())
-  message   String?
-  hasSent   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-}
-
 model StudentInfomation {
-  id          String @id @default(uuid())
-  studentId   String @unique
+  id          String   @id @default(uuid())
+  studentId   String   @unique
+  birthDate   Int?
   firstname   String
   lastname    String
-  studentType Int    @default(1)
-
-  addedAt   DateTime @default(now())
-  updatedAt DateTime @default(now())
+  studentType Int      @default(1)
+  isLoggedIn  Boolean  @default(false)
+  lineUserId  String?
+  addedAt     DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model StudentGrade {
@@ -75,6 +57,16 @@ model MessageLog {
   message   String
   isCorrect Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model ScheduleSent {
+  id         String    @id @default(uuid())
+  message    String?
+  topic      String?
+  lineuserId String
+  sentBy     String?
+  hasSent    Boolean   @default(false)
+  sentAt     DateTime?
 }
 
 enum Role {
