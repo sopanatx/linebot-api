@@ -42,14 +42,43 @@ model AutoSendMessages {
 }
 
 model StudentInfomation {
-  id        String @id @default(uuid())
-  studentId String @unique
-  firstname String
-  lastname  String
-  //  status    String   @def
+  id          String @id @default(uuid())
+  studentId   String @unique
+  firstname   String
+  lastname    String
+  studentType Int    @default(1)
+
+  addedAt   DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model StudentGrade {
+  id        String   @id @default(uuid())
+  studentId String
+  grade     String
+  subjectId String
+  addedAt   DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Subject {
+  id          String  @id @default(uuid())
+  subjectId   String  @unique
+  name        String
+  teacherName String
+  teacherId   String?
+}
+
+model MessageLog {
+  id        String   @id @default(uuid())
+  userId    String
+  message   String
+  isCorrect Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 enum Role {
   ADMIN
   USER
+  TEACHER
 }
