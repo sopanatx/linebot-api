@@ -14,17 +14,26 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-    const message:any = {
-        "type": "text",
-        "text": "ขอขอบคุณ -คุณลูกค้ามากๆครับที่มาใช้บริการถ่ายภาพของเรา😍📸 \n Facebook: Sakon Damminsek \n เบอร์ติดต่อส่วนตัวช่างภาพ    \n📱(0658273828)",
-    };
 
-    console.log(req.body.events[0].message.text);
-    console.log(req.body.events[0].source.userId);
-    client.pushMessage(req.body.events[0].source.userId, message).then(() => {
-        console.log("Message has been sent");
-    }).catch((err) => {
-        console.error("Message has been sent");
-    });
+    const userMessage = req.body.events[0].message.text;
+    const userId = req.body.events[0].source.userId;
+    console.log({userMessage});
+    console.log({userId});
+   
+    switch(userMessage){
+        case "ติดต่อช่างภาพโดยตรง":
+            const message:any = {
+                "type": "text",
+                "text": "ขอขอบคุณ -คุณลูกค้ามากๆครับที่มาใช้บริการถ่ายภาพของเรา😍📸 \n Facebook: Sakon Damminsek \n เบอร์ติดต่อส่วนตัวช่างภาพ    \n📱(0658273828)",
+            };
+            client.pushMessage(req.body.events[0].source.userId, message).then(() => {
+                console.log("Message has been sent");
+            }).catch((err) => {
+                console.error("Message has been sent");
+            });
+        break;
+        default:
+            break;
+    }
    
 };
