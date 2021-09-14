@@ -23,7 +23,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     switch (userMessage) {
         case "test":
-            return GetContact(userId);
+            return GetContact(userId, userMessage);
             break;
         default:
             break;
