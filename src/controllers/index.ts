@@ -19,11 +19,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     const userMessage = req.body.events[0].message.text;
     const userId = req.body.events[0].source.userId;
     const replyToken = req.body.events[0].replyToken;
-    console.log({ userMessage });
-    console.log({ userId });
-    console.log(req.body.events);
+    console.log("received message : %s from id : %s", userMessage, userId);
     switch (userMessage) {
-        case "test":
+        case "ติดต่อสาขาวิชา":
             return GetContact(userId, userMessage, replyToken);
             break;
         default:
