@@ -9,12 +9,12 @@ const client = new line.Client({
 export const GetContact = async (
     userId: string,
     userMessage: string,
+    replyToken: string,
 ): Promise<void> => {
     const message: any = {
         type: "text",
         text: "หากมีข้อสงสัย ท่านสามารถติดต่อสาขาวิชาได้ ที่  : ######",
     };
-
     await prisma.messageLog.create({
         data: {
             userId: userId,
@@ -23,11 +23,19 @@ export const GetContact = async (
         },
     });
     client
-        .pushMessage(userId, message)
+        .replyMessage(replyToken, message)
         .then(() => {
             console.log("Message has been sent to : %s", userId);
         })
         .catch(err => {
             console.error("Failed to send message:", err);
         });
+    // client
+    //     .pushMessage(userId, message)
+    //     .then(() => {
+    //         console.log("Message has been sent to : %s", userId);
+    //     })
+    //     .catch(err => {
+    //         console.error("Failed to send message:", err);
+    //     });
 };
