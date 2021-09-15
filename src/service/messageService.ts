@@ -1,7 +1,8 @@
 import * as line from "@line/bot-sdk";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import * as cron from "node-cron";
 
+const prisma = new PrismaClient();
 const client = new line.Client({
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
 });
@@ -23,6 +24,8 @@ export const GetContact = async (
                 type: "buttons",
                 thumbnailImageUrl:
                     "https://www.howtogeek.com/wp-content/uploads/2021/01/Telegram-User-Making-a-Audio-and-Video-Call.png?height=200p&trim=2,2,2,2",
+                imageAspectRatio: "square",
+                imageSize: "cover",
                 imageBackgroundColor: "#FFFFFF",
                 title: "ช่องทางการติดต่อ",
                 text: "ท่านสามารถเลือกช่องทางการติดต่อสาขาวิชาได้ดังนี้",
@@ -44,26 +47,19 @@ export const GetContact = async (
             type: "audio",
             originalContentUrl:
                 "https://storage.itpsru.in.th/sar-dev/static_audio_not-my-senpai.mp3",
-            duration: 2000,
+            duration: 3000,
         },
     ];
-
-    const getProfile = await client.getBotInfo();
-    console.log(getProfile);
-
-    await prisma.messageLog.create({
-        data: {
-            userId: userId,
-            message: userMessage,
-            isCorrect: true,
-        },
-    });
     client
         .replyMessage(replyToken, message)
         .then(() => {
-            console.log("Message has been sent to : %s", userId);
+            console.log(
+                "Message has been reply to : %s  | Sent At : %d",
+                userId,
+                Date.now(),
+            );
         })
         .catch(err => {
-            console.error("Failed to send message:", err);
+            console.error("Failed to reply message:", err);
         });
 };
