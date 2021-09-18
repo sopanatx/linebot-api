@@ -51,3 +51,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
             break;
     }
 };
+export const Callback = async (req: Request, res: Response): Promise<void> => {
+    console.log(req.headers);
+    res.status(200).send("CALLBACK");
+};
