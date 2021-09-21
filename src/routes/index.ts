@@ -9,3 +9,4 @@ const config = {
 index.get("/", controller.index);
 index.post("/webhook", middleware(config), controller.webhook);
 index.post("/callback", middleware(config), controller.Callback);
+index.get("/liff-apps", controller.liffApps);

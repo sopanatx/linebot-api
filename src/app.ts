@@ -12,12 +12,12 @@ export const app = express();
 
 // Express configuration
 app.set("port", process.env.PORT || 5001);
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, ""));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
 
-app.use(express.static(path.join(__dirname, "../public")));
+app.use("/static", express.static("public"));
 app.use("/", index);
 app.use("/api", api);
 

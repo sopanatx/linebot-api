@@ -4,7 +4,6 @@ import * as line from "@line/bot-sdk";
 import { GetContact } from "../service/messageService";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
 /**
  * GET /
  * Home page.
@@ -54,4 +53,23 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 export const Callback = async (req: Request, res: Response): Promise<void> => {
     console.log(req.headers);
     res.status(200).send("CALLBACK");
+};
+
+// Rendering liff apps page to user
+export const liffApps = async (req: Request, res: Response): Promise<void> => {
+    const myLiffId = process.env.LINE_LIFF_ID || "NULL_ID";
+    //liff.init({ liffId: myLiffId });
+    //console.log(await liff.isLoggedIn());
+    console.log("CLIENT: %s", req.headers["x-requested-with"]);
+    console.log("CONNECTION IP : %s", req.headers["cf-connecting-ip"]);
+    //console.log(req);
+
+    if (!req.headers["x-requested-with"]) {
+        console.info("Reject render from external browser.");
+        res.status(404).send();
+    } else {
+        console.info("Rendering to Line Client Browser");
+
+        res.render("../views/liffapps.ejs");
+    }
 };
