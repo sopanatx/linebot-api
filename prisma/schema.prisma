@@ -24,7 +24,7 @@ model Users {
 model StudentInfomation {
   id          String   @id @default(uuid())
   studentId   String   @unique
-  birthDate   Int?
+  idCard      String?  @unique
   firstname   String
   lastname    String
   studentType Int      @default(1)
