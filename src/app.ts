@@ -14,9 +14,8 @@ export const app = express()
 app.set('port', process.env.PORT || 5001)
 app.set('views', path.join(__dirname, ''))
 app.set('view engine', 'ejs')
-
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+//app.use(bodyParser.json())
+//app.use(bodyParser.urlencoded({ extended: true }))
 app.use(logger('dev'))
 
 app.use('/static', express.static('public'))

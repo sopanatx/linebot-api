@@ -32,10 +32,12 @@ export const GetStudentInfoByLineUserId = async (
 
 export const ApiLogin = async (req: Request, res: Response): Promise<void> => {
     let { idcard, accessToken } = req.body
+
+    console.log(req.body)
     if (!accessToken || !idcard) {
         res.status(403).send({
-            code: 3001,
-            message: 'Unauthorized',
+            code: 3004,
+            message: 'accesstoken must be passed in',
         })
     } else {
         console.log({ idcard, accessToken })
@@ -81,7 +83,8 @@ export const ApiLogin = async (req: Request, res: Response): Promise<void> => {
                     studentId: update.studentId,
                 },
             })
-        } catch {
+        } catch (e) {
+            console.log(e)
             res.status(403).send({
                 code: 3001,
                 message: 'Unauthorized',
@@ -140,3 +143,8 @@ export const ApiCheckLogin = async (
         }
     }
 }
+
+export const getStudentInfo = async (
+    req: Request,
+    res: Response
+): Promise<void> => {}
