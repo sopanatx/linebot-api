@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <!-- Bootstrap CSS -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+      <title>Liff Apps</title>
+</head>
+
+<body class="bg-success">
+      <div class="container">
+            <div class="d-flex justify-content-center py-5 flex-column">
+                  <div class="card text-center">
+                        <div class="card-header">
+                              ข้อมูลนักศึกษา
+                        </div>
+                        <div class="card-body">
+                              <h5 class="card-title">ชื่อ : </h5>
+                              <p class="card-text">ข้อมูลทั่วไป</p>
+                              <p class="card-text">ข้อมูลทั่วไป</p>
+                              <p class="card-text">ข้อมูลทั่วไป</p>
+                              <p id="deviceOS" class="card-text"></p>
+                              <p id="isInClient" class="card-text"></p>
+                              <p id="isLoggedIn" class="card-text"></p>
+                              <p id="userId" class="card-text"></p>
+                              <button class="btn btn-primary" id="closeWindowButton">ปิดเว็บนี้</button>
+                        </div>
+                        <div class="card-footer text-muted">
+                              ข้อมูลเมื่อ : <%= time %>
+
+                        </div>
+                  </div>
+            </div>
+      </div>
+
+
+      <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+      <script src="static/js/liffcore.js"></script>
+</body>
+
+</html>
