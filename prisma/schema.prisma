@@ -19,10 +19,11 @@ model Users {
   lastLogin DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  Subject Subject[]
 }
 
 model StudentInfomation {
-<<<<<<< HEAD
   id          String   @id @default(uuid())
   studentId   String   @unique
   idCard      String?  @unique
@@ -33,14 +34,6 @@ model StudentInfomation {
   lineUserId  String?
   addedAt     DateTime @default(now())
   updatedAt   DateTime @default(now())
-=======
-  id        String   @id @default(uuid())
-  studentId String   @unique
-  idCardNo  String   @unique
-  firstname String
-  lastname  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
 }
 
 model LineLogin {
@@ -48,7 +41,6 @@ model LineLogin {
   idCard     String
   lineUserId String
   loginAt    DateTime @default(now())
->>>>>>> e69d16f89be32f4601dec5fd56761d2f5869de35
 }
 
 model StudentGrade {
@@ -59,13 +51,17 @@ model StudentGrade {
   subjectId String
   addedAt   DateTime @default(now())
   updatedAt DateTime @default(now())
+  Subject   Subject  @relation(fields: [subjectId], references: [subjectId])
 }
 
 model Subject {
-  id          String  @id @default(uuid())
-  subjectId   String  @unique
-  subjectName String
-  teacherId   String?
+  id           String         @id @default(uuid())
+  subjectId    String         @unique
+  subjectName  String
+  semester     String
+  teacherId    Int
+  StudentGrade StudentGrade[]
+  Teacher      Users          @relation(fields: [teacherId], references: [id])
 }
 
 // ข้อมูลช่วงเวลาที่ User ขอข้อมูล / สอบถาม
