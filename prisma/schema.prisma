@@ -31,27 +31,25 @@ model StudentInfomation {
   lastname    String
   studentType Int      @default(1)
   isLoggedIn  Boolean  @default(false)
-  lineUserId  String?
+  lineUserId  String?  @unique
   addedAt     DateTime @default(now())
   updatedAt   DateTime @default(now())
-}
 
-model LineLogin {
-  id         String   @id @default(uuid())
-  idCard     String
-  lineUserId String
-  loginAt    DateTime @default(now())
+  StudentGrade StudentGrade[]
+  ClassJoined  ClassJoined[]
+
 }
 
 model StudentGrade {
-  id        String   @id @default(uuid())
+  id        String            @id @default(uuid())
   studentId String
-  grade     String
+  grade     String //
   gradeType String?
   subjectId String
-  addedAt   DateTime @default(now())
-  updatedAt DateTime @default(now())
-  Subject   Subject  @relation(fields: [subjectId], references: [subjectId])
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @default(now())
+  Student   StudentInfomation @relation(fields: [studentId], references: [id])
+  Subject   Subject           @relation(fields: [subjectId], references: [subjectId])
 }
 
 model Subject {
@@ -62,6 +60,7 @@ model Subject {
   teacherId    Int
   StudentGrade StudentGrade[]
   Teacher      Users          @relation(fields: [teacherId], references: [id])
+  ClassJoined  ClassJoined[]
 }
 
 // ข้อมูลช่วงเวลาที่ User ขอข้อมูล / สอบถาม
@@ -71,6 +70,36 @@ model MessageLog {
   message   String // ข้อความที่สอบถามเข้ามา
   isCorrect Boolean  @default(false) // ข้อความถูกต้องหรือใหม่
   createdAt DateTime @default(now()) // ช่วงเวลาทีระบบได้รับข้อมูล
+}
+
+model ClassJoined {
+  id            String   @id @default(uuid())
+  studentId     String
+  subjectId     String
+  hasOverAbsent Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+
+  Student StudentInfomation @relation(fields: [studentId], references: [id])
+  Subject Subject           @relation(fields: [subjectId], references: [subjectId])
+}
+
+model MessageAutoSend {
+  id         String   @id @default(uuid())
+  teacherId  String //ADMIN
+  message    String
+  timeToSend DateTime
+  isSent     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+model AutoPublish {
+  id            String   @id @default(uuid())
+  timeToPublish DateTime
+  semester      String
+  isPublished   Boolean  @default(false)
+  updatedAt     DateTime @default(now())
 }
 
 enum Role {
