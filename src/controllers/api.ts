@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 import { Request, Response } from 'express'
-import { Unauthorized } from 'http-errors'
+import { NotFound, Unauthorized } from 'http-errors'
 import axios from 'axios'
 export const ApiHello = async (req: Request, res: Response): Promise<void> => {
     res.status(200).send('Hello')
@@ -147,4 +147,56 @@ export const ApiCheckLogin = async (
 export const getStudentInfo = async (
     req: Request,
     res: Response
-): Promise<void> => {}
+): Promise<void> => {
+    /*
+    Error Code : 
+    3010    - ไม่พบข้อมูลนักศึกษา
+    3011    - ยังไม่ได้เข้าสู่ระบบ
+    3012    - ข้อมูลนักศึกษาไม่ถูกต้อง
+    3013    - access token ไม่ถูกต้อง
+    3014    - ข้อผิดพลาดอื่นๆ
+*/
+
+    const { lineaccesstoken } = req.headers
+
+    if (!lineaccesstoken) {
+        res.status(404).send()
+    }
+
+    let profile = await axios({
+        method: 'post',
+        url: 'https://api.line.me/v2/profile',
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${lineaccesstoken}`,
+        },
+    })
+
+    if (!profile.data) {
+        res.send({
+            code: 3014,
+            message: 'access token ไม่ถูกต้อง',
+        })
+    }
+
+    const getStudent = await prisma.studentInfomation.findUnique({
+        where: {
+            lineUserId: profile.data['userId'],
+        },
+        select: {
+            firstname: true,
+            lastname: true,
+            studentId: true,
+            isLoggedIn: true,
+        },
+    })
+
+    if (!getStudent) {
+        res.send({
+            code: 3010,
+            message: 'ไม่พบข้อมูลนักศึกษา / ยังไม่เคยเข้าสู่ระบบ',
+        })
+    }
+
+    res.status(200).send(getStudent)
+}
