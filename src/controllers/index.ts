@@ -22,6 +22,9 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
+    if (!req.body) {
+        res.send('ok')
+    }
     const userMessage = req.body.events[0].message.text
     const userId = req.body.events[0].source.userId
     const replyToken = req.body.events[0].replyToken
