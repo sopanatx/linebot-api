@@ -51,6 +51,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
             //         isCorrect: false,
             //     },
             // });
+            res.send({
+                status: 'ok',
+            })
             break
     }
 }

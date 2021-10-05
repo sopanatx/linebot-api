@@ -64,25 +64,31 @@ export const ApiLogin = async (req: Request, res: Response): Promise<void> => {
                     isLoggedIn: true,
                 },
             })
-
-            const update = await prisma.studentInfomation.update({
-                where: {
-                    idCard: idcard,
-                },
-                data: {
-                    isLoggedIn: true,
-                    lineUserId: profile.data['userId'],
-                },
-            })
-            res.json({
-                code: 7001,
-                message: 'Login Success',
-                data: {
-                    studentName: update.firstname + ' ' + getLogin.lastname,
-                    lineId: update.lineUserId,
-                    studentId: update.studentId,
-                },
-            })
+            if (!getLogin) {
+                res.status(403).send({
+                    code: 3005,
+                    message: 'Data not found!',
+                })
+            } else {
+                const update = await prisma.studentInfomation.update({
+                    where: {
+                        idCard: idcard,
+                    },
+                    data: {
+                        isLoggedIn: true,
+                        lineUserId: profile.data['userId'],
+                    },
+                })
+                res.json({
+                    code: 7001,
+                    message: 'Login Success',
+                    data: {
+                        studentName: update.firstname + ' ' + getLogin.lastname,
+                        lineId: update.lineUserId,
+                        studentId: update.studentId,
+                    },
+                })
+            }
         } catch (e) {
             console.log(e)
             res.status(403).send({
