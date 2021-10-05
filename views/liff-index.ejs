@@ -41,7 +41,15 @@
       <!-- <script src="static/js/liffcore.js"></script> -->
       <script>
             console.log('test')
-            let myLiffId = '1656420524-EazeDX81'
+            let myLiffId = ''
+            fetch('/api/get-liff-id')
+                  .then(function (reqResponse) {
+                        return reqResponse.json()
+                  })
+                  .then(function (jsonResponse) {
+                        myLiffId = jsonResponse.id
+                        initializeLiffOrDie(myLiffId)
+                  })
             liff.init({
                   liffId: myLiffId,
             })
