@@ -22,42 +22,44 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-    if (!req.body) {
+    console.log()
+    if (req.body.events.length <= 0) {
         res.send('ok')
-    }
-    const userMessage = req.body.events[0].message.text
-    const userId = req.body.events[0].source.userId
-    const replyToken = req.body.events[0].replyToken
-    console.log(
-        'received message : %s from id : %s | Received at: %d',
-        userMessage,
-        userId,
-        Date.now()
-    )
-    console.log(req.body.events[0])
-    switch (userMessage) {
-        case 'ติดต่อสาขาวิชา':
-            await prisma.messageLog.create({
-                data: {
-                    userId: userId,
-                    message: userMessage,
-                    isCorrect: true,
-                },
-            })
-            return await GetContact(userId, userMessage, replyToken)
-            break
-        default:
-            // await prisma.messageLog.create({
-            //     data: {
-            //         userId: userId,
-            //         message: userMessage,
-            //         isCorrect: false,
-            //     },
-            // });
-            res.send({
-                status: 'ok',
-            })
-            break
+    } else {
+        const userMessage = req.body.events[0].message.text
+        const userId = req.body.events[0].source.userId
+        const replyToken = req.body.events[0].replyToken
+        console.log(
+            'received message : %s from id : %s | Received at: %d',
+            userMessage,
+            userId,
+            Date.now()
+        )
+        console.log(req.body.events[0])
+        switch (userMessage) {
+            case 'ติดต่ออาจารย์ประจําสาขา':
+                await prisma.messageLog.create({
+                    data: {
+                        userId: userId,
+                        message: userMessage,
+                        isCorrect: true,
+                    },
+                })
+                return await GetContact(userId, userMessage, replyToken)
+                break
+            default:
+                // await prisma.messageLog.create({
+                //     data: {
+                //         userId: userId,
+                //         message: userMessage,
+                //         isCorrect: false,
+                //     },
+                // });
+                res.send({
+                    status: 'ok',
+                })
+                break
+        }
     }
 }
 export const Callback = async (req: Request, res: Response): Promise<void> => {
