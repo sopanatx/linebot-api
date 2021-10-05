@@ -62,8 +62,6 @@ export const Callback = async (req: Request, res: Response): Promise<void> => {
 // Rendering liff apps page to user
 export const liffApps = async (req: Request, res: Response): Promise<void> => {
     const myLiffId = process.env.LINE_LIFF_ID || 'NULL_ID'
-    //liff.init({ liffId: myLiffId });
-    //console.log(await liff.isLoggedIn());
     console.log('CLIENT: %s', req.headers['x-requested-with'])
     console.log('CONNECTION IP : %s', req.headers['cf-connecting-ip'])
     //console.log(req);
