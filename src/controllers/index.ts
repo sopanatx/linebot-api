@@ -90,3 +90,11 @@ export const LoginView = async (req: Request, res: Response): Promise<void> => {
     const time = momentTZ().format('DD MMMM YYYY HH:MM')
     res.render('../views/login.ejs', { time })
 }
+
+export const AdminLoginView = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const time = momentTZ().format('DD MMMM YYYY HH:MM')
+    res.render('../views/admin/login.ejs', { time })
+}
