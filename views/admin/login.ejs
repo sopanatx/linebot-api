@@ -1,47 +1,114 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
+
       <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
 
-      <title>LOGIN</title>
+      <title>Login</title>
 
-      <link rel="canonical" href="">
+      <!-- Custom fonts for this template-->
+      <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap" rel="stylesheet">
 
-      <!-- Bootstrap core CSS -->
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+      <style>
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap');
+      </style>
+      <!-- Custom styles for this template-->
+      <link href="/static/css/sb-admin-2.css" rel="stylesheet">
 
-      <!-- Custom styles for this template -->
-      <link href="/static/signin.css" rel="stylesheet">
 </head>
 
-<body class="text-center">
+<body class="bg-gradient-primary">
 
-      <main class="form-signin">
-            <form>
-                  <img class="mb-4" src="https://www.targetsolutions.com/wp-content/uploads/2017/02/login-icon.png"
-                        alt="" width="100" height="100">
-                  <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+      <div class="container">
 
-                  <div class="form-floating">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Username</label>
+            <!-- Outer Row -->
+            <div class="row justify-content-center">
+
+                  <div class="col-xl-10 col-lg-12 col-md-9">
+
+                        <div class="card o-hidden border-0 shadow-lg my-5">
+                              <div class="card-body p-0">
+                                    <!-- Nested Row within Card Body -->
+                                    <div class="row">
+                                          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                                          <div class="col-lg-6">
+                                                <div class="p-5">
+                                                      <div class="text-center">
+                                                            <h1 class="h4 text-gray-900 mb-4">
+                                                                  เข้าสู่ระบบสำหรับอาจารย์และเจ้าหน้าที่</h1>
+                                                      </div>
+                                                      <form class="user">
+                                                            <div class="form-group">
+                                                                  <input type="text"
+                                                                        class="form-control form-control-user"
+                                                                        id="username" aria-describedby="username"
+                                                                        placeholder="กรอกชื่อผู้ใช้งาน">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <input type="password"
+                                                                        class="form-control form-control-user"
+                                                                        id="password" placeholder="กรอกรหัสผ่านผู้ใช้">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <div class="custom-control custom-checkbox small">
+                                                                        <input type="checkbox"
+                                                                              class="custom-control-input"
+                                                                              id="customCheck">
+                                                                        <label class="custom-control-label"
+                                                                              for="customCheck">Remember
+                                                                              Me</label>
+                                                                  </div>
+                                                            </div>
+                                                            <a href="index.html"
+                                                                  class="btn btn-primary btn-user btn-block">
+                                                                  Login
+                                                            </a>
+                                                            <hr>
+                                                            <a href="index.html"
+                                                                  class="btn btn-google btn-user btn-block">
+                                                                  <i class="fab fa-google fa-fw"></i> Login with Google
+                                                            </a>
+                                                            <a href="index.html"
+                                                                  class="btn btn-facebook btn-user btn-block">
+                                                                  <i class="fab fa-facebook-f fa-fw"></i> Login with
+                                                                  Facebook
+                                                            </a>
+                                                      </form>
+                                                      <hr>
+                                                      <div class="text-center">
+                                                            <a class="small" href="forgot-password.html">Forgot
+                                                                  Password?</a>
+                                                      </div>
+                                                      <div class="text-center">
+                                                            <a class="small" href="register.html">Create an Account!</a>
+                                                      </div>
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+
                   </div>
-                  <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                        <label for="floatingPassword">Password</label>
-                  </div>
 
-                  <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-                  <p class="mt-5 mb-3 text-muted">&copy; 2021 LINE BOT Service</p>
-            </form>
-      </main>
+            </div>
 
+      </div>
 
+      <!-- Bootstrap core JavaScript-->
+      <script src="/static/vendor/jquery/jquery.min.js"></script>
+      <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <!-- Core plugin JavaScript-->
+      <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <!-- Custom scripts for all pages-->
+      <script src="/static/js/sb-admin-2.min.js"></script>
 
 </body>
 

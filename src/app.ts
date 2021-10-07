@@ -7,6 +7,7 @@ import { errorHandler, errorNotFoundHandler } from './middlewares/errorHandler'
 // Routes
 import { index } from './routes/index'
 import { api } from './routes/api'
+import { admin } from './routes/admin'
 // Create Express server
 export const app = express()
 
@@ -21,6 +22,7 @@ app.use(logger('dev'))
 app.use('/static', express.static('public'))
 app.use('/', index)
 app.use('/api', api)
+app.use('/admin', admin)
 
 //app.use(errorNotFoundHandler)
 //app.use(errorHandler)
