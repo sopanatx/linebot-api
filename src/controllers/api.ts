@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
-import { Request, Response } from 'express'
-import { NotFound, Unauthorized } from 'http-errors'
+import { NextFunction, Request, Response } from 'express'
 import axios from 'axios'
+import * as shortid from 'shortid'
+import * as bcrypt from 'bcryptjs'
 export const ApiHello = async (req: Request, res: Response): Promise<void> => {
     res.status(200).send('Hello')
 }
@@ -205,4 +206,114 @@ export const getStudentInfo = async (
     }
 
     res.status(200).send(getStudent)
+}
+
+export const authAdmin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    const { username, password, recaptcha_response } = req.body
+    if (!username || !password || !recaptcha_response) {
+        return res.status(401).json({
+            status: 'error',
+            message: 'username / password must be passed in.',
+        })
+    }
+
+    let validate = await axios({
+        method: 'post',
+        url: 'https://www.google.com/recaptcha/api/siteverify',
+        params: {
+            secret: process.env.RECAPTCHA_SECRET,
+            response: recaptcha_response,
+        },
+    })
+    if (validate.data.success == false) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Invalid recaptcha token',
+        })
+    }
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: username,
+        },
+        select: {
+            id: true,
+            password: true,
+            fullname: true,
+            role: true,
+        },
+    })
+    if (!getUser) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่มีพบข้อมูล user นี้ในระบบ',
+        })
+    }
+
+    await bcrypt.compare(password, getUser.password).then(async (result) => {
+        if (result) {
+            if (getUser.role == 'ADMIN') {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Login success',
+                    name: getUser.fullname,
+                })
+            } else {
+                return res.status(401).json({
+                    status: 'error',
+                    message: 'You are not admin',
+                })
+            }
+        } else {
+            return res.status(401).json({
+                status: 'error',
+                message: 'Invalid username or password',
+            })
+        }
+    })
+    // res.status(200).send({
+    //     message: 'success',
+    //     name: 'กรินทร์ สุขสวัสดิ์',
+    // })
+}
+
+export const GenerateTestUser = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (process.env.NODE_ENV === 'production') {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+    let genEmail = shortid.generate() + '@testmail.com'
+    let genPassword = shortid.generate()
+    try {
+        const user = await prisma.users.create({
+            data: {
+                fullname: 'Test',
+                email: genEmail,
+                password: await bcrypt.hash(genPassword, 10),
+                role: 'ADMIN',
+            },
+        })
+        res.status(200).send({
+            message: 'success',
+            user: user,
+            raw: {
+                email: genEmail,
+                password: genPassword,
+            },
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Internal Server Error',
+        })
+    }
 }

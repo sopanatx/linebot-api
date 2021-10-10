@@ -21,5 +21,8 @@ export const AdminLoginView = async (
     res: Response
 ): Promise<void> => {
     const time = momentTZ().format('DD MMMM YYYY HH:MM')
-    res.render('../views/admin/login.ejs', { time })
+    res.render('../views/admin/login.ejs', {
+        time,
+        recaptcha_site: process.env.RECAPTCHA_SITE,
+    })
 }
