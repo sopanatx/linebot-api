@@ -222,7 +222,6 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
             message: 'username / password must be passed in.',
         })
     }
-
     let validate = await axios({
         method: 'post',
         url: 'https://www.google.com/recaptcha/api/siteverify',
@@ -285,6 +284,7 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
                     status: 'success',
                     message: 'Login Success',
                     name: getUser.fullname,
+                    token: encryptedToken,
                 })
                 //sessions.setSession(req, getUser.id);
             } else {
@@ -382,4 +382,74 @@ export const ExportBackup = async (
         message: 'Bad Request',
         data: 'ยังไม่พร้อมใช้งาน',
     })
+}
+
+export const getAllMyClass = async (req: any, res: any): Promise<any> => {
+    const { id } = req.body
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+    if (!id) {
+        return res.status(400).json({
+            code: 5002,
+            status: 'error',
+            message: 'Missing id in parameters',
+        })
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+    return res.status(200).json({
+        status: 'success',
+        message: 'Get all my class',
+        email: getEmail,
+    })
+}
+
+export const sendMessage = async (req: any, res: any): Promise<any> => {
+    const { id } = req.params
+    const message = req.body.message
+    const studentId = req.body.studentId
+    console.log(message, studentId)
+    if (!id || !message) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing id or message in parameters',
+        })
+    }
+    //
+    return res.status(200).json({
+        status: 'success',
+        message: 'Send message success',
+    })
+}
+
+const ValidationToken = async (token: string): Promise<any> => {
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+    try {
+        if (decryptedData.expired < Date.now()) {
+            return {
+                message: 'expired',
+                isError: true,
+            }
+        } else {
+            return {
+                message: 'success',
+                isError: false,
+                email: decryptedData.email,
+            }
+        }
+    } catch {
+        return {
+            isError: true,
+        }
+    }
 }
