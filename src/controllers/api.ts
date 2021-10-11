@@ -308,20 +308,6 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
 }
 
 export const GenerateTestUser = async (req: any, res: any): Promise<any> => {
-    let decryptedToken
-    if (!req.cookies.token) {
-        return res.status(401).json({
-            status: 'error',
-            message: 'Invalid token',
-        })
-    } else {
-        let token = req.cookies.token
-        console.log('Cookie Token', req.cookies.token)
-        let decrypt = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
-        decryptedToken = JSON.parse(decrypt.toString(CryptoJS.enc.Utf8))
-        console.log(decryptedToken)
-    }
-
     if (process.env.NODE_ENV === 'production') {
         return res.status(400).json({
             status: 'error',
@@ -346,7 +332,6 @@ export const GenerateTestUser = async (req: any, res: any): Promise<any> => {
                 email: genEmail,
                 password: genPassword,
             },
-            data: decryptedToken,
         })
     } catch (e) {
         return res.status(500).json({
