@@ -13,3 +13,4 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 export const admin = Router()
 
 admin.get('/login', urlencodedParser, controller.AdminLoginView)
+admin.get('/dashboard', urlencodedParser, controller.AdminMainView)

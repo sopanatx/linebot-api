@@ -4,6 +4,8 @@ import { NextFunction, Request, Response } from 'express'
 import axios from 'axios'
 import * as shortid from 'shortid'
 import * as bcrypt from 'bcryptjs'
+import passport from 'passport'
+import CryptoJS from 'crypto-js'
 export const ApiHello = async (req: Request, res: Response): Promise<void> => {
     res.status(200).send('Hello')
 }
@@ -208,11 +210,11 @@ export const getStudentInfo = async (
     res.status(200).send(getStudent)
 }
 
-export const authAdmin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<any> => {
+export const authAdmin = async (req: any, res: any): Promise<any> => {
+    let sess
+
+    console.log({ sess })
+    passport.authenticate('local')
     const { username, password, recaptcha_response } = req.body
     if (!username || !password || !recaptcha_response) {
         return res.status(401).json({
@@ -244,6 +246,7 @@ export const authAdmin = async (
             id: true,
             password: true,
             fullname: true,
+            email: true,
             role: true,
         },
     })
@@ -253,21 +256,44 @@ export const authAdmin = async (
             message: 'ไม่มีพบข้อมูล user นี้ในระบบ',
         })
     }
-
+    let options = {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true, // The cookie only accessible by the web server
+        signed: false,
+    }
     await bcrypt.compare(password, getUser.password).then(async (result) => {
         if (result) {
             if (getUser.role == 'ADMIN') {
+                // let sess = req.session;
+                // sess.user = getUser.id;
+                //   req.session.logedin = true;
+                res.setHeader('WWW-Authenticate', 'Basic')
+                res.cookie('loggedin', 'true')
+                const token = {
+                    email: getUser.email,
+                    expired: Date.now() + 3600000,
+                }
+                const encryptedToken = await CryptoJS.AES.encrypt(
+                    JSON.stringify(token),
+                    'NW3mazd9Do7DQneaTFbiXxphJ'
+                ).toString()
+                res.cookie('token', encryptedToken, options)
+                //res.user = email;
+
+                passport.authenticate('local', { successFlash: 'Welcome!' })
                 return res.status(200).json({
                     status: 'success',
-                    message: 'Login success',
+                    message: 'Login Success',
                     name: getUser.fullname,
                 })
+                //sessions.setSession(req, getUser.id);
             } else {
                 return res.status(401).json({
                     status: 'error',
                     message: 'You are not admin',
                 })
             }
+            0
         } else {
             return res.status(401).json({
                 status: 'error',
@@ -281,10 +307,21 @@ export const authAdmin = async (
     // })
 }
 
-export const GenerateTestUser = async (
-    req: Request,
-    res: Response
-): Promise<any> => {
+export const GenerateTestUser = async (req: any, res: any): Promise<any> => {
+    let decryptedToken
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            status: 'error',
+            message: 'Invalid token',
+        })
+    } else {
+        let token = req.cookies.token
+        console.log('Cookie Token', req.cookies.token)
+        let decrypt = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+        decryptedToken = JSON.parse(decrypt.toString(CryptoJS.enc.Utf8))
+        console.log(decryptedToken)
+    }
+
     if (process.env.NODE_ENV === 'production') {
         return res.status(400).json({
             status: 'error',
@@ -309,11 +346,45 @@ export const GenerateTestUser = async (
                 email: genEmail,
                 password: genPassword,
             },
+            data: decryptedToken,
         })
-    } catch {
+    } catch (e) {
         return res.status(500).json({
             status: 'error',
             message: 'Internal Server Error',
+        })
+    }
+}
+
+export const DecryptToken = async (req: any, res: any): Promise<any> => {
+    const { token } = req.body
+    if (!token) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'token must be passed in.',
+        })
+    }
+    //
+    try {
+        const decrypted = CryptoJS.AES.decrypt(
+            token,
+            'NW3mazd9Do7DQneaTFbiXxphJ'
+        )
+        const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+        if (decryptedData.expired < Date.now()) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'token expired',
+            })
+        }
+        res.status(200).send({
+            message: 'success',
+            data: decryptedData,
+        })
+    } catch {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Invalid token',
         })
     }
 }

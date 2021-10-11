@@ -3,13 +3,32 @@ import logger from 'morgan'
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import { errorHandler, errorNotFoundHandler } from './middlewares/errorHandler'
+var session = require('express-session')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 // Routes
 import { index } from './routes/index'
 import { api } from './routes/api'
 import { admin } from './routes/admin'
+import passport from 'passport'
 // Create Express server
 export const app = express()
+app.use(cookieParser())
+app.use(
+    session({
+        secret: 'RaeDCUjDrrxB6CZhtJhz6JNpW',
+        resave: true,
+        saveUninitialized: true,
+    })
+)
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(passport.initialize())
+app.use(passport.session())
+const oneDay = 1000 * 60 * 60 * 24
 
 // Express configuration
 app.set('port', process.env.PORT || 5001)

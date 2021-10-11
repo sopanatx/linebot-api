@@ -132,6 +132,7 @@
                               title: 'เข้าสู่ระบบสำเร็จ',
                               text: `เข้าสู่ระบบสำเร็จในชื่อ : ${result.data.name}`,
                         })
+                        console.log(result.headers);
                   }).catch((error) => {
                         console.log(error.response.data.message);
                         Swal.fire({
@@ -143,6 +144,7 @@
                   });
             }
       </script>
+      <script type="module" src="/path/to/js.cookie.mjs"></script>
       <!-- Bootstrap core JavaScript-->
       <script src="/static/vendor/jquery/jquery.min.js"></script>
       <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

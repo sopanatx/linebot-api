@@ -17,3 +17,8 @@ api.post('/check-login', jsonParser, controller.ApiCheckLogin)
 api.get('/getstudentinfo', jsonParser, controller.getStudentInfo)
 api.post('/auth/admin', jsonParser, controller.authAdmin)
 api.get('/genUser', jsonParser, controller.GenerateTestUser)
+api.post('/token', urlencodedParser, controller.DecryptToken)
+api.get('/test', async (req, res) => {
+    console.log(req.signedCookies)
+    res.send('test')
+})
