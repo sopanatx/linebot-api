@@ -31,8 +31,6 @@ const oneDay = 1000 * 60 * 60 * 24
 app.set('port', process.env.PORT || 5001)
 app.set('views', path.join(__dirname, ''))
 app.set('view engine', 'ejs')
-//app.use(bodyParser.json())
-//app.use(bodyParser.urlencoded({ extended: true }))
 app.use(logger('dev'))
 
 app.use('/static', express.static('public'))
@@ -40,5 +38,5 @@ app.use('/', index)
 app.use('/api', api)
 app.use('/admin', admin)
 
-//app.use(errorNotFoundHandler)
-//app.use(errorHandler)
+app.use(errorNotFoundHandler)
+app.use(errorHandler)
