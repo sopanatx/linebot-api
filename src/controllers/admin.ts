@@ -80,6 +80,19 @@ export const AdminMainView = async (
     res.render('../views/admin/main.ejs', { renderdata })
 }
 
+export const AdminLogout = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    res.clearCookie('connect.sid')
+    res.clearCookie('token')
+    res.clearCookie('loggedin')
+    return res.redirect('/admin/login')
+}
+
 const ValidationToken = async (token: string): Promise<any> => {
     const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
     const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
