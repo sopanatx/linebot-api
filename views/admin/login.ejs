@@ -134,9 +134,7 @@
                         }).then(function () {
                               window.location = "/admin/dashboard";
                         });
-                        console.log(result.headers);
                   }).catch((error) => {
-                        console.log(error.response.data.message);
                         Swal.fire({
                               icon: 'error',
                               title: 'เข้าสู่ระบบล้มเหลว',

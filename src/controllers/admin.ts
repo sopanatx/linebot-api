@@ -74,6 +74,7 @@ export const AdminMainView = async (
         getTotalMessage: getTotalMessage,
         getTotalAsking: getTotalAsking,
         fullname: getUser.fullname,
+        time: time,
     }
 
     res.render('../views/admin/main.ejs', { renderdata })

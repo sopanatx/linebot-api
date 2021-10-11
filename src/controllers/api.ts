@@ -373,3 +373,13 @@ export const DecryptToken = async (req: any, res: any): Promise<any> => {
         })
     }
 }
+
+export const ExportBackup = async (
+    req: Request,
+    res: Response
+): Promise<Response> => {
+    return res.status(400).send({
+        message: 'Bad Request',
+        data: 'ยังไม่พร้อมใช้งาน',
+    })
+}

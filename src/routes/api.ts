@@ -1,3 +1,4 @@
+import { json } from 'body-parser'
 import { Router } from 'express'
 import * as controller from '../controllers/api'
 var bodyParser = require('body-parser')
@@ -18,7 +19,4 @@ api.get('/getstudentinfo', jsonParser, controller.getStudentInfo)
 api.post('/auth/admin', jsonParser, controller.authAdmin)
 api.get('/genUser', jsonParser, controller.GenerateTestUser)
 api.post('/token', urlencodedParser, controller.DecryptToken)
-api.get('/test', async (req, res) => {
-    console.log(req.signedCookies)
-    res.send('test')
-})
+api.get('/export-backup', jsonParser, controller.ExportBackup)

@@ -358,10 +358,6 @@
                                                       <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                                       ข้อมูลระบบ
                                                 </a>
-                                                <a class="dropdown-item" href="#">
-                                                      <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                      ออกจากระบบ
-                                                </a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" href="#" data-toggle="modal"
                                                       data-target="#logoutModal">
@@ -382,8 +378,9 @@
                               <!-- Page Heading -->
                               <div class="d-sm-flex align-items-center justify-content-between mb-4">
                                     <h1 class="h3 mb-0 text-gray-800">สถิติข้อมูล</h1>
-                                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                                class="fas fa-download fa-sm text-white-50"></i> สำรองข้อมูล </a>
+                                    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                                class="fas fa-download fa-sm text-white-50" onclick="getBackup();"></i>
+                                          สำรองข้อมูล </a>
                               </div>
 
                               <!-- Content Row -->
@@ -490,7 +487,8 @@
                         <footer class="sticky-footer bg-white">
                               <div class="container my-auto">
                                     <div class="copyright text-center my-auto">
-                                          <span>Copyright &copy; 2021 Line bot Admin</span>
+                                          <span>Copyright &copy; 2021 Line bot Admin | ปรับปรุงข้อมูลล่าสุด : <%=
+                                                      renderdata.time %></span>
                                     </div>
                               </div>
                         </footer>
@@ -527,6 +525,22 @@
                         </div>
                   </div>
             </div>
+
+            <script>
+                  function getBackup() {
+                        axios({
+                              method: 'get',
+                              url: '/api/export-backup'
+                        }).then((result) => {
+                        }).catch((error) => {
+                              Swal.fire({
+                                    icon: 'error',
+                                    title: 'ดำเนินการไม่สำเร็จ',
+                                    text: `${error.response.data.data}`,
+                              })
+                        });
+                  }
+            </script>
 
             <!-- Bootstrap core JavaScript-->
             <script src="/static/vendor/jquery/jquery.min.js"></script>
