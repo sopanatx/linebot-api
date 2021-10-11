@@ -44,7 +44,7 @@ export const AdminMainView = async (
 
     const getEmail = getDecodeToken.email
 
-    const time = momentTZ().format('DD MMMM YYYY HH:MM')
+    let time = momentTZ().format('DD MMMM YYYY HH:MM')
     const getUser = await prisma.users.findFirst({
         where: {
             email: getEmail,

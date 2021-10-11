@@ -23,9 +23,6 @@ app.use(
     })
 )
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-
 app.use(passport.initialize())
 app.use(passport.session())
 const oneDay = 1000 * 60 * 60 * 24
