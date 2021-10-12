@@ -11540,7 +11540,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+			"sInfo": "แสดงจาก _START_ ถึง _END_ จาก _TOTAL_ จำนวนทั้งหมด",
 	
 	
 			/**

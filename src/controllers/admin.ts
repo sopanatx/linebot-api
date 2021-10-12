@@ -22,6 +22,7 @@ export const AdminLoginView = async (
     req: Request,
     res: Response
 ): Promise<void> => {
+    if (req.cookies.token) res.redirect('/admin/dashboard')
     const time = momentTZ().format('DD MMMM YYYY HH:MM')
     console.log(req.session)
     res.render('../views/admin/login.ejs', {
@@ -98,14 +99,18 @@ export const AdminManageSubject = async (
         where: {
             email: getEmail,
         },
+        include: {
+            Subject: true,
+        },
     })
 
     if (!getUser) {
         return res.redirect('/admin/login')
     }
-
+    console.log(getUser)
     const renderdata = {
         fullname: getUser.fullname,
+        Subject: getUser.Subject,
     }
 
     res.render('../views/admin/manageClass.ejs', { renderdata })

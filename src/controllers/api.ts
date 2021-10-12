@@ -406,10 +406,19 @@ export const getAllMyClass = async (req: any, res: any): Promise<any> => {
     }
 
     const getEmail = getDecodeToken.email
+    const getClass = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+        include: {
+            Subject: true,
+        },
+    })
     return res.status(200).json({
         status: 'success',
         message: 'Get all my class',
         email: getEmail,
+        data: getClass,
     })
 }
 
@@ -451,5 +460,54 @@ const ValidationToken = async (token: string): Promise<any> => {
         return {
             isError: true,
         }
+    }
+}
+
+export const AdminAddUser = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'ROLE_NOT_ACCEPTABLE',
+            status: 'error',
+            message: 'คุณไม่มีสิทธิ์เข้าถึงระบบนี้',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.role != 'ADMIN') {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { email, password, fullname, role } = req.body
+    if (!email || !password || !fullname || !role) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing email, password, fullname or role in parameters',
+        })
+    }
+    //
+    try {
+        const user = await prisma.users.create({
+            data: {
+                fullname: fullname,
+                email: email,
+                password: await bcrypt.hash(password, 10),
+                role: role,
+            },
+        })
+        res.status(200).send({
+            message: 'success',
+            user: user,
+        })
+    } catch (e) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Internal Server Error',
+        })
     }
 }
