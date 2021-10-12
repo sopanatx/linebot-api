@@ -40,6 +40,9 @@ export const AdminMainView = async (
     }
     const getDecodeToken = await ValidationToken(req.cookies.token)
     if (getDecodeToken.isError) {
+        res.clearCookie('connect.sid')
+        res.clearCookie('token')
+        res.clearCookie('loggedin')
         return res.redirect('/admin/login')
     }
 
@@ -53,6 +56,9 @@ export const AdminMainView = async (
     })
 
     if (!getUser) {
+        res.clearCookie('connect.sid')
+        res.clearCookie('token')
+        res.clearCookie('loggedin')
         return res.redirect('/admin/login')
     }
     const getStudentCount = await prisma.studentInfomation.count()
