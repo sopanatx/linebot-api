@@ -122,6 +122,51 @@ export const AdminManageSubject = async (
     res.render('../views/admin/manageClass.ejs', { renderdata })
 }
 
+export const AdminTeacherSendMessage = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+        include: {
+            Subject: {
+                include: {
+                    StudentGrade: {
+                        include: {
+                            Student: true,
+                        },
+                    },
+                },
+            },
+        },
+    })
+
+    if (!getUser) {
+        return res.redirect('/admin/login')
+    }
+    console.log(getUser)
+    console.log(getUser.Subject[0].StudentGrade)
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        Subject: getUser.Subject,
+    }
+
+    res.render('../views/admin/sendMessage.ejs', { renderdata })
+}
+
 export const AdminLogout = async (
     req: Request,
     res: Response

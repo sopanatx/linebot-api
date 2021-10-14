@@ -6,6 +6,12 @@ import * as shortid from 'shortid'
 import * as bcrypt from 'bcryptjs'
 import passport from 'passport'
 import CryptoJS from 'crypto-js'
+import * as line from '@line/bot-sdk'
+
+const client = new line.Client({
+    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+})
+
 export const ApiHello = async (req: Request, res: Response): Promise<void> => {
     res.status(200).send('Hello')
 }
@@ -423,21 +429,53 @@ export const getAllMyClass = async (req: any, res: any): Promise<any> => {
 }
 
 export const sendMessage = async (req: any, res: any): Promise<any> => {
-    const { id } = req.params
-    const message = req.body.message
-    const studentId = req.body.studentId
+    const { studentId, message } = req.body
+
     console.log(message, studentId)
-    if (!id || !message) {
+    if (!studentId || !message) {
         return res.status(400).json({
             status: 'error',
             message: 'Missing id or message in parameters',
         })
     }
-    //
-    return res.status(200).json({
-        status: 'success',
-        message: 'Send message success',
-    })
+
+    try {
+        const getStudent = await prisma.studentInfomation.findFirst({
+            where: {
+                studentId: studentId,
+            },
+        })
+
+        if (!getStudent.isLoggedIn) {
+            return res.status(500).json({
+                status: 'failed',
+                message: 'นักศึกษายังไม่ได้ล็อคอินกับ Line OA',
+            })
+        }
+
+        client
+            .pushMessage(getStudent.lineUserId, {
+                type: 'text',
+                text: message,
+            })
+            .then(() => {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Send message success',
+                })
+            })
+            .catch(() => {
+                return res.status(500).json({
+                    status: 'failed',
+                    message: 'ส่งข้อความล้มเหลว',
+                })
+            })
+    } catch {
+        return res.status(500).json({
+            status: 'failed',
+            message: 'ส่งข้อความล้มเหลว',
+        })
+    }
 }
 
 const ValidationToken = async (token: string): Promise<any> => {
@@ -510,4 +548,51 @@ export const AdminAddUser = async (req: any, res: any): Promise<any> => {
             message: 'Internal Server Error',
         })
     }
+}
+
+export const getStudent = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'COOKIES_NOT_VALID',
+            status: 'error',
+            message: 'เซสซันหมดอายุ',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { id } = req.body
+    console.log(req.body)
+    if (!id) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing id in parameters',
+        })
+    }
+    const getStudent = await prisma.studentInfomation.findMany({
+        include: {
+            StudentGrade: {
+                where: {
+                    subjectId: id,
+                },
+                select: {
+                    grade: true,
+                    gradeType: true,
+                },
+            },
+        },
+    })
+
+    res.status(200).json({
+        getStudent,
+    })
 }
