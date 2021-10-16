@@ -14,6 +14,7 @@ import { admin } from './routes/admin'
 import passport from 'passport'
 // Create Express server
 export const app = express()
+//app.use(helmet())
 app.use(cookieParser())
 app.use(
     session({

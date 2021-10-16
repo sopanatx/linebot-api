@@ -167,6 +167,46 @@ export const AdminTeacherSendMessage = async (
     res.render('../views/admin/sendMessage.ejs', { renderdata })
 }
 
+export const AdminEditClass = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const { id } = req.query
+
+    if (!id) return res.redirect('/admin/class')
+
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    const getSubject = await prisma.subject.findUnique({
+        where: {
+            id: id.toString(),
+        },
+    })
+
+    console.log(getSubject)
+    const renderdata = {
+        fullname: getUser.fullname,
+        getSubject,
+        classId: id,
+    }
+
+    res.render('../views/admin/editClass.ejs', { renderdata })
+}
+
 export const AdminLogout = async (
     req: Request,
     res: Response
