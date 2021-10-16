@@ -603,9 +603,9 @@ export const getStudent = async (req: any, res: any): Promise<any> => {
 export const updateClass = async (req: any, res: any): Promise<any> => {
     if (!req.cookies.token) {
         return res.status(401).json({
-            error_msg: 'COOKIES_NOT_VALID',
+            error_msg: 'UNAUTHORIZED',
             status: 'error',
-            message: 'เซสซันหมดอายุ',
+            message: 'Unathorized',
         })
     }
     let token = req.cookies.token
@@ -653,9 +653,9 @@ export const updateClass = async (req: any, res: any): Promise<any> => {
 export const getServerInfo = async (req: any, res: any): Promise<any> => {
     if (!req.cookies.token) {
         return res.status(401).json({
-            error_msg: 'COOKIES_NOT_VALID',
+            error_msg: 'UNAUTHORIZED',
             status: 'error',
-            message: 'เซสซันหมดอายุ',
+            message: 'Unathorized',
         })
     }
     let token = req.cookies.token
@@ -664,9 +664,9 @@ export const getServerInfo = async (req: any, res: any): Promise<any> => {
 
     if (decryptedData.expired < Date.now()) {
         return res.status(401).json({
-            code: 5001,
+            code: 1041,
             status: 'error',
-            message: 'Unauthorized',
+            message: 'Session Expired',
         })
     }
 
@@ -679,6 +679,7 @@ export const getServerInfo = async (req: any, res: any): Promise<any> => {
         uptime: os.uptime(),
         cpu: os.cpus(),
         platform: os.platform(),
+        type: os.type(),
         version: os.version(),
     })
 }

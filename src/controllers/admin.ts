@@ -7,6 +7,7 @@ import 'moment/locale/th'
 import momentTZ from 'moment-timezone'
 import { Console } from 'console'
 import CryptoJS from 'crypto-js'
+import * as os from 'os'
 momentTZ.locale('th-th')
 momentTZ.tz.setDefault('Asia/Bangkok')
 
@@ -241,4 +242,55 @@ const ValidationToken = async (token: string): Promise<any> => {
             isError: true,
         }
     }
+}
+
+export const getSystemStatus = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        system: {
+            cpu: os.cpus()[0].model,
+            hostname: os.hostname(),
+            platform: os.platform(),
+            uptime: convertHMS(os.uptime()),
+        },
+    }
+
+    res.render('../views/admin/system.ejs', { renderdata })
+}
+
+function convertHMS(value: any) {
+    const sec = parseInt(value, 10) // convert value to number if it's string
+    let hours: any = Math.floor(sec / 3600) // get hours
+    let minutes: any = Math.floor((sec - hours * 3600) / 60) // get minutes
+    let seconds: any = sec - hours * 3600 - minutes * 60 //  get seconds
+    // add 0 if value < 10; Example: 2 => 02
+    if (hours < 10) {
+        hours = '0' + hours
+    }
+    if (minutes < 10) {
+        minutes = '0' + minutes
+    }
+    if (seconds < 10) {
+        seconds = '0' + seconds
+    }
+    return hours + ':' + minutes + ':' + seconds // Return is HH : MM : SS
 }
