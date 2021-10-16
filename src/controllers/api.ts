@@ -464,7 +464,8 @@ export const sendMessage = async (req: any, res: any): Promise<any> => {
                     message: 'Send message success',
                 })
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 return res.status(500).json({
                     status: 'failed',
                     message: 'ส่งข้อความล้มเหลว',
