@@ -14,8 +14,9 @@ import { admin } from './routes/admin'
 import passport from 'passport'
 // Create Express server
 export const app = express()
+const port = process.env.PORT || 5001
 
-// Express configuration
+// Express configuration0
 app.set('port', process.env.PORT || 5001)
 app.set('views', path.join(__dirname, ''))
 app.set('view engine', 'ejs')

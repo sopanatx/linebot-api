@@ -7,9 +7,11 @@ import * as bcrypt from 'bcryptjs'
 import passport from 'passport'
 import CryptoJS from 'crypto-js'
 import * as line from '@line/bot-sdk'
+import * as os from 'os'
 
 const client = new line.Client({
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+    channelSecret: process.env.LINE_CHANNEL_SECRET,
 })
 
 export const ApiHello = async (req: Request, res: Response): Promise<void> => {
@@ -646,4 +648,37 @@ export const updateClass = async (req: any, res: any): Promise<any> => {
             message: 'ข้อผิดพลาดระหว่างประมวลผล',
         })
     }
+}
+
+export const getServerInfo = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'COOKIES_NOT_VALID',
+            status: 'error',
+            message: 'เซสซันหมดอายุ',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    res.status(200).json({
+        status: 'ok',
+        hostname: os.hostname(),
+        loadavg: os.loadavg(),
+        freemem: os.freemem(),
+        totalmem: os.totalmem(),
+        uptime: os.uptime(),
+        cpu: os.cpus(),
+        platform: os.platform(),
+        version: os.version(),
+    })
 }

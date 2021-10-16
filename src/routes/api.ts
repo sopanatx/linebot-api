@@ -25,3 +25,4 @@ api.post('/send-message', jsonParser, controller.sendMessage)
 api.post('/getStudent', jsonParser, controller.getStudent)
 
 api.post('/update-class', jsonParser, controller.updateClass)
+api.get('/getserverinfo', jsonParser, controller.getServerInfo)
