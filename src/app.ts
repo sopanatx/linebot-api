@@ -15,6 +15,15 @@ import passport from 'passport'
 // Create Express server
 export const app = express()
 //app.use(helmet())
+
+// Express configuration
+app.set('port', process.env.PORT || 5001)
+app.set('views', path.join(__dirname, ''))
+app.set('view engine', 'ejs')
+app.use(logger('dev'))
+
+app.use('/static', express.static('public'))
+
 app.use(cookieParser())
 app.use(
     session({
@@ -24,17 +33,6 @@ app.use(
     })
 )
 
-app.use(passport.initialize())
-app.use(passport.session())
-const oneDay = 1000 * 60 * 60 * 24
-
-// Express configuration
-app.set('port', process.env.PORT || 5001)
-app.set('views', path.join(__dirname, ''))
-app.set('view engine', 'ejs')
-app.use(logger('dev'))
-
-app.use('/static', express.static('public'))
 app.use('/', index)
 app.use('/api', api)
 app.use('/admin', admin)
