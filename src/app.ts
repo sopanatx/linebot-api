@@ -6,7 +6,7 @@ import { errorHandler, errorNotFoundHandler } from './middlewares/errorHandler'
 var session = require('express-session')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-
+import helmet from 'helmet'
 // Routes
 import { index } from './routes/index'
 import { api } from './routes/api'
@@ -14,15 +14,12 @@ import { admin } from './routes/admin'
 import passport from 'passport'
 // Create Express server
 export const app = express()
-//app.use(helmet())
 
 // Express configuration
 app.set('port', process.env.PORT || 5001)
 app.set('views', path.join(__dirname, ''))
 app.set('view engine', 'ejs')
 app.use(logger('dev'))
-
-app.use('/static', express.static('public'))
 
 app.use(cookieParser())
 app.use(
@@ -32,7 +29,7 @@ app.use(
         saveUninitialized: true,
     })
 )
-
+app.use('/static', express.static('public'))
 app.use('/', index)
 app.use('/api', api)
 app.use('/admin', admin)

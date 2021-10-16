@@ -25,7 +25,7 @@ export const AdminLoginView = async (
     if (req.cookies.token) res.redirect('/admin/dashboard')
     const time = momentTZ().format('DD MMMM YYYY HH:MM')
     console.log(req.session)
-    res.render('../views/admin/login.ejs', {
+    res.status(200).render('../views/admin/login.ejs', {
         time,
         recaptcha_site: process.env.RECAPTCHA_SITE,
     })

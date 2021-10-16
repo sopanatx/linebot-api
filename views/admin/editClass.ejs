@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,7 +7,7 @@
       <meta name="description" content="" />
       <meta name="author" content="" />
 
-      <title>แจ้งเตือนผู้ปกครองผ่านไลน์ | Line bot Dashboard</title>
+      <title>แก้ไขข้อมูลรายวิชา | Line bot Dashboard</title>
 
       <!-- Custom fonts for this template-->
       <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
@@ -365,63 +364,50 @@
                         <div class="container-fluid">
                               <!-- Page Heading -->
                               <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 class="h3 mb-0 text-gray-800">แจ้งเตือนผู้ปกครองผ่านไลน์</h1>
+                                    <h1 class="h3 mb-0 text-gray-800">แก้ไขข้อมูลรายวิชา</h1>
                                     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                                           onclick="getBackup()"><i class="fas fa-download fa-sm text-white-50"></i>
                                           สำรองข้อมูล </a>
                               </div>
 
                               <p class="mb-4">
-                                    การแจ้งเตือนผู้ปกครองผ่านไลน์จะสามารถส่งข้อความหาผู้ปกครองที่มีการเชื่อมต่อกับไลน์ได้แล้วเท่านั้น
-                                    โดยเลือกรายวิชา หลังจากนั้นเลือกชื่อนักศึกษา
+                                    การแก้ไขข้อมูลรายวิชา สามารถแก้ไขได้เฉพาะ ชื่อรายวิชาเท่านั้น
                               </p>
                               <!-- Dropdown Card Example -->
-                              <div class="card shadow mb-4">
-                                    <!-- Card Header - Dropdown -->
-                                    <div
-                                          class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                          <h6 class="m-0 font-weight-bold text-primary">เลือกรายวิชา</h6>
-                                          <div class="dropdown no-arrow">
-                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                      aria-labelledby="dropdownMenuLink">
-                                                      <div class="dropdown-header">Dropdown Header:</div>
-                                                      <a class="dropdown-item" href="#">Action</a>
-                                                      <a class="dropdown-item" href="#">Another action</a>
-                                                      <div class="dropdown-divider"></div>
-                                                      <a class="dropdown-item" href="#">Something else here</a>
-                                                </div>
-                                          </div>
-                                    </div>
-                                    <!-- Card Body -->
+                              <div class="card mb-4">
+                                    <div class="card-header">ชื่อรายวิชา</div>
                                     <div class="card-body">
-                                          <form>
-                                                <div class="py-2">
-                                                      <input class="btn btn-primary btn-user btn-block" type="button"
-                                                            value="ส่งข้อความ" id="sendMsgBtn"
-                                                            onclick="sendMessage()" />
-                                                </div>
-                                          </form>
+                                          <input class="form-control" id="subjectName" type="text"
+                                                placeholder="พิมพ์ชื่อรายวิชา"
+                                                value="<%= renderdata.getSubject.subjectName %>">
                                     </div>
                               </div>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                              <form>
+                                    <div class="py-2">
+                                          <input class="btn btn-primary btn-user btn-block" type="button"
+                                                value="ปรับปรุงข้อมูล" id="sendMsgBtn" onclick="updateClass()" />
+                                    </div>
+                              </form>
                         </div>
                   </div>
-                  <!-- End of Main Content -->
-
-                  <!-- Footer -->
-                  <footer class="sticky-footer bg-white">
-                        <div class="container my-auto">
-                              <div class="copyright text-center my-auto">
-                                    <span>Copyright &copy; 2021 Line bot Admin </span>
-                              </div>
-                        </div>
-                  </footer>
-                  <!-- End of Footer -->
             </div>
-            <!-- End of Content Wrapper -->
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                  <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; 2021 Line bot Admin </span>
+                  </div>
+            </div>
+      </footer>
+      <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
       </div>
       <!-- End of Page Wrapper -->
 
@@ -452,88 +438,26 @@
       </div>
 
       <script>
-            function getBackup() {
-                  axios({
-                        method: "get",
-                        url: "/api/export-backup",
-                  })
-                        .then((result) => { })
-                        .catch((error) => {
-                              Swal.fire({
-                                    icon: "error",
-                                    title: "ดำเนินการไม่สำเร็จ",
-                                    text: `${error.response.data.data}`,
-                              });
-                        });
-            }
+            function updateClass() {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const myParam = urlParams.get('id');
+                  let subjectName = document.getElementById('subjectName').value;
+                  console.log(myParam)
 
-            function enableBtn() {
-                  document.getElementById("getStudentBtn").disabled = false;
-            }
-
-            function removeOptions(selectElement) {
-                  var i,
-                        L = selectElement.options.length - 1;
-                  for (i = L; i >= 0; i--) {
-                        selectElement.remove(i);
-                  }
-            }
-
-            function getStudent() {
-                  removeOptions(document.getElementById("classStudentList"));
                   axios({
                         method: "post",
-                        url: "/api/getStudent",
+                        url: "/api/update-class",
                         data: {
-                              id: "GESE112",
-                        },
-                  })
-                        .then((result) => {
-                              var ele = document.getElementById("classStudentList");
-                              for (var i = 0; i < result.data.getStudent.length; i++) {
-                                    // BIND DATA TO <select> ELEMENT.
-                                    ele.innerHTML =
-                                          ele.innerHTML +
-                                          '<option value="' +
-                                          result.data.getStudent[i].studentId +
-                                          '">' +
-                                          result.data.getStudent[i].studentId +
-                                          " " +
-                                          result.data.getStudent[i].firstname +
-                                          " " +
-                                          result.data.getStudent[i].lastname +
-                                          "</option>";
-                              }
-                              document.getElementById("formmessage").hidden = false;
-                              document.getElementById("sendMsgBtn").hidden = false;
-
-                        })
-                        .catch((error) => {
-                              console.error(error);
-                              Swal.fire({
-                                    icon: "error",
-                                    title: "ดำเนินการไม่สำเร็จ",
-                                    text: `ไม่สามารถรับข้อมูลได้`,
-                              });
-                        });
-            }
-
-            function sendMessage() {
-                  var message = document.getElementById("message").value;
-                  var studentId = document.getElementById("classStudentList").value;
-                  axios({
-                        method: "post",
-                        url: "/api/send-message",
-                        data: {
-                              message: message,
-                              studentId: studentId,
+                              id: myParam,
+                              subjectName: subjectName
                         },
                   }).then((result) => {
                         Swal.fire({
                               icon: "success",
                               title: "ดำเนินการสำเร็จ",
-                              text: `ส่งข้อความเรียบร้อย`,
+                              text: `ปรับปรุงข้อมูลสำเร็จ`,
                         });
+                        window.location = "/admin/class";
                   })
                         .catch((error) => {
                               console.error(error);
@@ -555,20 +479,6 @@
 
       <!-- Custom scripts for all pages-->
       <script src="/static/js/sb-admin-2.min.js"></script>
-
-      <!-- Page level plugins -->
-      <script src="/static/vendor/chart.js/Chart.min.js"></script>
-
-      <!-- Page level custom scripts -->
-      <script src="/static/js/demo/chart-area-demo.js"></script>
-      <script src="/static/js/demo/chart-pie-demo.js"></script>
-
-      <!-- Page level plugins -->
-      <script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-      <!-- Page level custom scripts -->
-      <script src="/static/js/demo/datatables-demo.js"></script>
 </body>
 
 </html>

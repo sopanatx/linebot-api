@@ -596,3 +596,53 @@ export const getStudent = async (req: any, res: any): Promise<any> => {
         getStudent,
     })
 }
+
+export const updateClass = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'COOKIES_NOT_VALID',
+            status: 'error',
+            message: 'เซสซันหมดอายุ',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { id, subjectName } = req.body
+
+    if (!id || !subjectName) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing id or subjectName in parameters',
+        })
+    }
+
+    try {
+        await prisma.subject.update({
+            where: {
+                id: id,
+            },
+            data: {
+                subjectName: subjectName,
+            },
+        })
+        res.status(200).json({
+            status: 'success',
+            message: 'ปรับปรุงข้อมูลสำเร็จ',
+        })
+    } catch (e) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
+}
