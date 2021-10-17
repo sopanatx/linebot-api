@@ -8,6 +8,7 @@ import momentTZ from 'moment-timezone'
 import { Console } from 'console'
 import CryptoJS from 'crypto-js'
 import * as os from 'os'
+import { getAllMyClass } from './api'
 momentTZ.locale('th-th')
 momentTZ.tz.setDefault('Asia/Bangkok')
 
@@ -374,4 +375,107 @@ export const AdminManageUser = async (req: Request, res: Response) => {
     }
     console.log(renderdata.getAllUser.length)
     res.render('../views/admin/user.ejs', { renderdata })
+}
+
+export const AdminAddStudent = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+    }
+
+    res.render('../views/admin/addstudent.ejs', { renderdata })
+}
+
+export const AdminManageStudent = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const getAllStudent = await prisma.studentInfomation.findMany({})
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        student: getAllStudent,
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+    }
+    res.render('../views/admin/student.ejs', { renderdata })
+}
+
+export const AdminManageClass = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const getAllClass = await prisma.subject.findMany({
+        include: {
+            Teacher: {
+                select: {
+                    fullname: true,
+                },
+            },
+        },
+    })
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        class: getAllClass,
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+    }
+    console.log(renderdata.class)
+    res.render('../views/admin/class.ejs', { renderdata })
 }

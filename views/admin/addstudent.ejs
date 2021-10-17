@@ -7,7 +7,7 @@
       <meta name="description" content="" />
       <meta name="author" content="" />
 
-      <title>สถานะระบบ | Line bot Dashboard</title>
+      <title>เพิ่มข้อมูลนักเรียน | Line bot Dashboard</title>
 
       <!-- Custom fonts for this template-->
       <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
@@ -331,139 +331,159 @@
                         <div class="container-fluid">
                               <!-- Page Heading -->
                               <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 class="h3 mb-0 text-gray-800">สถานะระบบและข้อมูลเซิฟเวอร์</h1>
+                                    <h1 class="h3 mb-0 text-gray-800">เพิ่มข้อมูลนักเรียน</h1>
                                     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                                           onclick="getBackup()"><i class="fas fa-download fa-sm text-white-50"></i>
                                           สำรองข้อมูล </a>
                               </div>
 
-                              <p class="mb-4">
-                                    สถานะระบบและข้อมูลเซิฟเวอร์ สามารถตรวจสอบการทำการของระบบว่าทำการได้ปกติ
-                              </p>
                               <!-- Dropdown Card Example -->
                               <div class="card mb-4">
-                                    <div class="card-header">สถานะระบบและข้อมูลเซิฟเวอร์</div>
+                                    <div class="card-header">เพิ่มข้อมูลนักเรียน</div>
                                     <div class="card-body">
-                                          <p class="text-gray-600">
-                                                CPU: <%= renderdata.system.cpu %>
-                                          </p>
-                                          <p class="text-gray-600">
-                                                Hostname : <%= renderdata.system.hostname %>
-                                          </p>
-                                          <p class="text-gray-600">
-                                                Platform: <%= renderdata.system.platform %>
-                                          </p>
-                                          <p class="text-gray-600">
-                                                Uptime : <%= renderdata.system.uptime %>
-                                          </p>
+                                          <div class="row">
+                                                <div class="col-lg-6">
+                                                      <form action="/admin/addteacher" method="post">
+                                                            <div class="form-group">
+                                                                  <label>ชื่อ</label>
+                                                                  <input type="text" class="form-control" id="firstname"
+                                                                        aria-describedby="firstnameHelp"
+                                                                        placeholder="ชื่อ" name="firstname" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <label>สกุล</label>
+                                                                  <input type="text" class="form-control" id="lastname"
+                                                                        aria-describedby="lastnameHelp"
+                                                                        placeholder="ชื่อ" name="lastname" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <label>รหัสนักศึกษา</label>
+                                                                  <input type="number" class="form-control"
+                                                                        id="studentId" aria-describedby="studentIdHelp"
+                                                                        placeholder="รหัสนักศึกษา" name="studentId"
+                                                                        required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <label>รหัสนักศึกษา</label>
+                                                                  <input type="number" class="form-control" id="idcard"
+                                                                        aria-describedby="idcardHelp"
+                                                                        placeholder="เลขประจำตัวประชาชน" name="idcard"
+                                                                        minlength="13" maxlength="13" required>
+                                                            </div>
 
+                                                            <div class="py-3">
+                                                                  <input class="btn btn-primary btn-user btn-block"
+                                                                        type="button" value="เพิ่มผู้ใช้งานระบบ"
+                                                                        id="addStudentBtn" onclick="addStudent()" />
+                                                            </div>
+                                                </div>
+
+                                          </div>
+                                    </div>
+                              </div>
+                              <!-- End of Main Content -->
+
+                              <!-- Footer -->
+                              <footer class="sticky-footer bg-white">
+                                    <div class="container my-auto">
+                                          <div class="copyright text-center my-auto">
+                                                <span>Copyright &copy; 2021 Line bot Admin </span>
+                                          </div>
+                                    </div>
+                              </footer>
+                              <!-- End of Footer -->
+                        </div>
+                        <!-- End of Content Wrapper -->
+                  </div>
+                  <!-- End of Page Wrapper -->
+
+                  <!-- Scroll to Top Button-->
+                  <a class="scroll-to-top rounded" href="#page-top">
+                        <i class="fas fa-angle-up"></i>
+                  </a>
+
+                  <!-- Logout Modal-->
+                  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                          </button>
+                                    </div>
+                                    <div class="modal-body">Select "Logout" below if you are ready to end your current
+                                          session.
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button class="btn btn-secondary" type="button"
+                                                data-dismiss="modal">Cancel</button>
+                                          <a class="btn btn-primary" href="login.html">Logout</a>
                                     </div>
                               </div>
                         </div>
-
                   </div>
-            </div>
-      </div>
-      <!-- End of Main Content -->
-
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                  <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; 2021 Line bot Admin </span>
-                  </div>
-            </div>
-      </footer>
-      <!-- End of Footer -->
-      </div>
-      <!-- End of Content Wrapper -->
-      </div>
-      <!-- End of Page Wrapper -->
-
-      <!-- Scroll to Top Button-->
-      <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-      </a>
-
-      <!-- Logout Modal-->
-      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                        <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                              </button>
-                        </div>
-                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.
-                        </div>
-                        <div class="modal-footer">
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                              <a class="btn btn-primary" href="login.html">Logout</a>
-                        </div>
-                  </div>
-            </div>
-      </div>
 
 
-      <script>
-            function getBackup() {
-                  axios({
-                        method: 'get',
-                        url: '/api/export-backup'
-                  }).then((result) => {
-                  }).catch((error) => {
-                        Swal.fire({
-                              icon: 'error',
-                              title: 'ดำเนินการไม่สำเร็จ',
-                              text: `${error.response.data.data}`,
-                        })
-                  });
-            }
-      </script>
-      <script>
-            function updateClass() {
-                  const urlParams = new URLSearchParams(window.location.search);
-                  const myParam = urlParams.get('id');
-                  let subjectName = document.getElementById('subjectName').value;
-                  console.log(myParam)
-
-                  axios({
-                        method: "post",
-                        url: "/api/update-class",
-                        data: {
-                              id: myParam,
-                              subjectName: subjectName
-                        },
-                  }).then((result) => {
-                        Swal.fire({
-                              icon: "success",
-                              title: "ดำเนินการสำเร็จ",
-                              text: `ปรับปรุงข้อมูลสำเร็จ`,
-                        });
-                        window.location = "/admin/class";
-                  })
-                        .catch((error) => {
-                              console.error(error);
-                              Swal.fire({
-                                    icon: "error",
-                                    title: "ดำเนินการไม่สำเร็จ",
-                                    text: `${error.response.data.message}`,
+                  <script>
+                        function getBackup() {
+                              axios({
+                                    method: 'get',
+                                    url: '/api/export-backup'
+                              }).then((result) => {
+                              }).catch((error) => {
+                                    Swal.fire({
+                                          icon: 'error',
+                                          title: 'ดำเนินการไม่สำเร็จ',
+                                          text: `${error.response.data.data}`,
+                                    })
                               });
-                        });
-            }
-      </script>
+                        }
+                  </script>
 
-      <!-- Bootstrap core JavaScript-->
-      <script src="/static/vendor/jquery/jquery.min.js"></script>
-      <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                  <script>
+                        function addStudent() {
+                              var firstname = document.getElementById('firstname').value;
+                              var lastname = document.getElementById('lastname').value;
+                              var studentId = document.getElementById('studentId').value;
+                              var idcard = document.getElementById('idcard').value;
 
-      <!-- Core plugin JavaScript-->
-      <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+                              axios({
+                                    method: 'post',
+                                    url: '/api/addstudent',
+                                    data: {
+                                          firstname,
+                                          lastname,
+                                          studentId,
+                                          idcard
+                                    }
+                              }).then((result) => {
+                                    Swal.fire({
+                                          icon: 'success',
+                                          title: 'ดำเนินการสำเร็จ',
+                                          text: `เพิ่มผู้ใช้สำเร็จแล้ว`,
+                                    })
+                                    window.location.href = "/admin/student";
+                              }).catch((error) => {
+                                    Swal.fire({
+                                          icon: 'error',
+                                          title: 'ดำเนินการไม่สำเร็จ',
+                                          text: `${error.response.data.message}`,
+                                    })
+                              });
+                        }
 
-      <!-- Custom scripts for all pages-->
-      <script src="/static/js/sb-admin-2.min.js"></script>
+                  </script>
+                  <!-- Bootstrap core JavaScript-->
+                  <script src="/static/vendor/jquery/jquery.min.js"></script>
+                  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+                  <!-- Core plugin JavaScript-->
+                  <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+                  <!-- Custom scripts for all pages-->
+                  <script src="/static/js/sb-admin-2.min.js"></script>
 </body>
 
 </html>

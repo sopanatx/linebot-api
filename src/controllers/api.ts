@@ -741,3 +741,133 @@ export const getUser = async (req: any, res: any): Promise<any> => {
         getAllUser,
     })
 }
+export const addStudent = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'Unathorized',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { studentId, idcard, firstname, lastname } = req.body
+    if (!studentId || !idcard || !firstname || !lastname) {
+        return res.status(400).json({
+            status: 'error',
+            message:
+                'Missing studentId, idcard, firstname, lastname in parameters',
+        })
+    }
+
+    const getStudent = await prisma.studentInfomation.findMany({
+        where: {
+            OR: [
+                {
+                    idCard: idcard.toString(),
+                    studentId: studentId.toString(),
+                },
+            ],
+        },
+    })
+
+    if (getStudent.length >= 1) {
+        return res.status(409).json({
+            status: 'error',
+            message: 'มีข้อมูลนักเรียนนี้แล้ว',
+        })
+    }
+
+    try {
+        const create = await prisma.studentInfomation.create({
+            data: {
+                studentId: String(studentId),
+                idCard: idcard,
+                firstname: firstname,
+                lastname: lastname,
+            },
+        })
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'สร้างข้อมูลนักเรียนสำเร็จ',
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
+}
+
+export const addClass = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'Unathorized',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { classId, className, teacherId, semester } = req.body
+    if (!classId || !className || !teacherId || !semester) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing classId or className in parameters',
+        })
+    }
+
+    const getClass = await prisma.subject.findMany({
+        where: {
+            subjectId: classId,
+        },
+    })
+    if (getClass) {
+        return res.status(409).json({
+            status: 'error',
+            message: 'รหัสวิชานี้ซ้ำในระบบแล้ว ',
+        })
+    }
+
+    try {
+        const create = await prisma.subject.create({
+            data: {
+                subjectId: String(classId),
+                subjectName: className,
+                teacherId: teacherId,
+                semester: semester,
+            },
+        })
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'สร้างข้อมูลรายวิชาสำเร็จ',
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
+}
