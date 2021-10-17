@@ -7,15 +7,15 @@
       <meta name="description" content="" />
       <meta name="author" content="" />
 
-      <title>แก้ไขข้อมูลรายวิชา | Line bot Dashboard</title>
+      <title>เพิ่มอาจารย์ - ผู้ดูแลระบบ | Line bot Dashboard</title>
 
       <!-- Custom fonts for this template-->
       <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
       <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap" rel="stylesheet" />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <style>
             @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap");
       </style>
@@ -101,6 +101,8 @@
                                           </div>
                                     </div>
                               </li>
+
+
 
                               <!-- Divider -->
                               <hr class="sidebar-divider d-none d-md-block" />
@@ -329,121 +331,167 @@
                         <div class="container-fluid">
                               <!-- Page Heading -->
                               <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 class="h3 mb-0 text-gray-800">แก้ไขข้อมูลรายวิชา</h1>
+                                    <h1 class="h3 mb-0 text-gray-800">เพิ่มอาจารย์ - ผู้ดูแลระบบ</h1>
                                     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                                           onclick="getBackup()"><i class="fas fa-download fa-sm text-white-50"></i>
                                           สำรองข้อมูล </a>
                               </div>
 
                               <p class="mb-4">
-                                    การแก้ไขข้อมูลรายวิชา สามารถแก้ไขได้เฉพาะ ชื่อรายวิชาเท่านั้น
+                                    เพิ่มข้อมูลอาจารย์ - ผู้ดูแลระบบ โดยอีเมลจะไม่สามารถใช้งานซ้ำได้ในระบบ
                               </p>
                               <!-- Dropdown Card Example -->
                               <div class="card mb-4">
-                                    <div class="card-header">ชื่อรายวิชา</div>
+                                    <div class="card-header"> เพิ่มอาจารย์ - ผู้ดูแลระบบ</div>
                                     <div class="card-body">
-                                          <input class="form-control" id="subjectName" type="text"
-                                                placeholder="พิมพ์ชื่อรายวิชา"
-                                                value="<%= renderdata.getSubject.subjectName %>">
+                                          <div class="row">
+                                                <div class="col-lg-6">
+                                                      <form action="/admin/addteacher" method="post">
+                                                            <div class="form-group">
+                                                                  <label for="exampleInputEmail1">ชื่อ - นามสกุล</label>
+                                                                  <input type="text" class="form-control" id="fullname"
+                                                                        aria-describedby="fullnameHelp"
+                                                                        placeholder="ชื่อ - นามสกุล" name="fullname"
+                                                                        required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <label for="exampleInputEmail1">อีเมล</label>
+                                                                  <input type="email" class="form-control" id="email"
+                                                                        aria-describedby="emailHelp" placeholder="อีเมล"
+                                                                        name="email" required>
+
+                                                            </div>
+                                                            <div class="form-group">
+                                                                  <label for="exampleInputEmail1">รหัสผ่าน</label>
+                                                                  <input type="password" class="form-control"
+                                                                        id="password" aria-describedby="passwordHelp"
+                                                                        placeholder="รหัสผ่าน" name="password" required>
+                                                            </div>
+                                                            <select class="form-control" id="roleId"
+                                                                  onchange="enableBtn()">
+
+                                                                  <option selected disabled>เลือกสิทธิ์ผู้ใช้</option>
+                                                                  <option value="TEACHER"> อาจารย์ </option>
+                                                                  <option value="ADMIN"> ผู้ดูแลระบบ </option>
+                                                            </select>
+                                                            <div class="py-3">
+                                                                  <input class="btn btn-primary btn-user btn-block"
+                                                                        type="button" value="เพิ่มผู้ใช้งานระบบ"
+                                                                        id="addUserBtn" onclick="addUser()"
+                                                                        disabled="disabled" />
+                                                            </div>
+                                                </div>
+
+                                          </div>
+                                    </div>
+                              </div>
+                              <!-- End of Main Content -->
+
+                              <!-- Footer -->
+                              <footer class="sticky-footer bg-white">
+                                    <div class="container my-auto">
+                                          <div class="copyright text-center my-auto">
+                                                <span>Copyright &copy; 2021 Line bot Admin </span>
+                                          </div>
+                                    </div>
+                              </footer>
+                              <!-- End of Footer -->
+                        </div>
+                        <!-- End of Content Wrapper -->
+                  </div>
+                  <!-- End of Page Wrapper -->
+
+                  <!-- Scroll to Top Button-->
+                  <a class="scroll-to-top rounded" href="#page-top">
+                        <i class="fas fa-angle-up"></i>
+                  </a>
+
+                  <!-- Logout Modal-->
+                  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                          </button>
+                                    </div>
+                                    <div class="modal-body">Select "Logout" below if you are ready to end your current
+                                          session.
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button class="btn btn-secondary" type="button"
+                                                data-dismiss="modal">Cancel</button>
+                                          <a class="btn btn-primary" href="login.html">Logout</a>
                                     </div>
                               </div>
                         </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                              <form>
-                                    <div class="py-2">
-                                          <input class="btn btn-primary btn-user btn-block" type="button"
-                                                value="ปรับปรุงข้อมูล" id="sendMsgBtn" onclick="updateClass()" />
-                                    </div>
-                              </form>
-                        </div>
                   </div>
-            </div>
-      </div>
-      <!-- End of Main Content -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                  <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; 2021 Line bot Admin </span>
-                  </div>
-            </div>
-      </footer>
-      <!-- End of Footer -->
-      </div>
-      <!-- End of Content Wrapper -->
-      </div>
-      <!-- End of Page Wrapper -->
 
-      <!-- Scroll to Top Button-->
-      <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-      </a>
-
-      <!-- Logout Modal-->
-      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                        <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                              </button>
-                        </div>
-                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.
-                        </div>
-                        <div class="modal-footer">
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                              <a class="btn btn-primary" href="login.html">Logout</a>
-                        </div>
-                  </div>
-            </div>
-      </div>
-
-      <script>
-            function updateClass() {
-                  const urlParams = new URLSearchParams(window.location.search);
-                  const myParam = urlParams.get('id');
-                  let subjectName = document.getElementById('subjectName').value;
-                  console.log(myParam)
-
-                  axios({
-                        method: "post",
-                        url: "/api/update-class",
-                        data: {
-                              id: myParam,
-                              subjectName: subjectName
-                        },
-                  }).then((result) => {
-                        Swal.fire({
-                              icon: "success",
-                              title: "ดำเนินการสำเร็จ",
-                              text: `ปรับปรุงข้อมูลสำเร็จ`,
-                        });
-                        window.location = "/admin/class";
-                  })
-                        .catch((error) => {
-                              console.error(error);
-                              Swal.fire({
-                                    icon: "error",
-                                    title: "ดำเนินการไม่สำเร็จ",
-                                    text: `${error.response.data.message}`,
+                  <script>
+                        function getBackup() {
+                              axios({
+                                    method: 'get',
+                                    url: '/api/export-backup'
+                              }).then((result) => {
+                              }).catch((error) => {
+                                    Swal.fire({
+                                          icon: 'error',
+                                          title: 'ดำเนินการไม่สำเร็จ',
+                                          text: `${error.response.data.data}`,
+                                    })
                               });
-                        });
-            }
-      </script>
+                        }
+                  </script>
+                  <script>
+                        function enableBtn() {
+                              document.getElementById("addUserBtn").disabled = false;
+                        }
+                  </script>
 
-      <!-- Bootstrap core JavaScript-->
-      <script src="/static/vendor/jquery/jquery.min.js"></script>
-      <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                  <script>
+                        function addUser() {
+                              var fullname = document.getElementById("fullname").value;
+                              var email = document.getElementById("email").value;
+                              var password = document.getElementById("password").value;
+                              var roleId = document.getElementById("roleId").value;
+                              axios({
+                                    method: 'post',
+                                    url: '/api/adduser',
+                                    data: {
+                                          fullname,
+                                          email,
+                                          password,
+                                          role: roleId
+                                    }
+                              }).then((result) => {
+                                    Swal.fire({
+                                          icon: 'success',
+                                          title: 'ดำเนินการสำเร็จ',
+                                          text: `เพิ่มผู้ใช้สำเร็จแล้ว`,
+                                    })
+                                    window.location.href = "/admin/user";
+                              }).catch((error) => {
+                                    Swal.fire({
+                                          icon: 'error',
+                                          title: 'ดำเนินการไม่สำเร็จ',
+                                          text: `${error.response.data.message}`,
+                                    })
+                              });
+                        }
 
-      <!-- Core plugin JavaScript-->
-      <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+                  </script>
+                  <!-- Bootstrap core JavaScript-->
+                  <script src="/static/vendor/jquery/jquery.min.js"></script>
+                  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-      <!-- Custom scripts for all pages-->
-      <script src="/static/js/sb-admin-2.min.js"></script>
+                  <!-- Core plugin JavaScript-->
+                  <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+                  <!-- Custom scripts for all pages-->
+                  <script src="/static/js/sb-admin-2.min.js"></script>
 </body>
 
 </html>

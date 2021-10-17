@@ -516,7 +516,13 @@ export const AdminAddUser = async (req: any, res: any): Promise<any> => {
     const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
     const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
 
-    if (decryptedData.role != 'ADMIN') {
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: decryptedData.email,
+        },
+    })
+
+    if (getUser.role != 'ADMIN') {
         return res.status(401).json({
             code: 5001,
             status: 'error',
@@ -532,6 +538,18 @@ export const AdminAddUser = async (req: any, res: any): Promise<any> => {
         })
     }
     //
+    const isExist = await prisma.users.findFirst({
+        where: {
+            email: email,
+        },
+    })
+    if (isExist) {
+        return res.status(409).json({
+            status: 'error',
+            message: 'มีอีเมลนี้ซ้ำอยู่แล้วในระบบ',
+        })
+    }
+
     try {
         const user = await prisma.users.create({
             data: {
@@ -681,5 +699,45 @@ export const getServerInfo = async (req: any, res: any): Promise<any> => {
         platform: os.platform(),
         type: os.type(),
         version: os.version(),
+    })
+}
+
+export const getUser = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'ROLE_NOT_ACCEPTABLE',
+            status: 'error',
+            message: 'คุณไม่มีสิทธิ์เข้าถึงระบบนี้',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: decryptedData.email,
+        },
+    })
+
+    if (getUser.role != 'ADMIN') {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const getAllUser = await prisma.users.findMany({
+        select: {
+            id: true,
+            fullname: true,
+            email: true,
+            role: true,
+        },
+    })
+
+    res.status(200).json({
+        getAllUser,
     })
 }

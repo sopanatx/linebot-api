@@ -82,6 +82,8 @@ export const AdminMainView = async (
         getTotalMessage: getTotalMessage,
         getTotalAsking: getTotalAsking,
         fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
         time: time,
     }
 
@@ -118,6 +120,8 @@ export const AdminManageSubject = async (
     const renderdata = {
         fullname: getUser.fullname,
         Subject: getUser.Subject,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
     }
 
     res.render('../views/admin/manageClass.ejs', { renderdata })
@@ -163,6 +167,8 @@ export const AdminTeacherSendMessage = async (
     const renderdata = {
         fullname: getUser.fullname,
         Subject: getUser.Subject,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
     }
 
     res.render('../views/admin/sendMessage.ejs', { renderdata })
@@ -203,6 +209,8 @@ export const AdminEditClass = async (
         fullname: getUser.fullname,
         getSubject,
         classId: id,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
     }
 
     res.render('../views/admin/editClass.ejs', { renderdata })
@@ -263,7 +271,9 @@ export const getSystemStatus = async (
             email: getEmail,
         },
     })
-
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
     const renderdata = {
         fullname: getUser.fullname,
         system: {
@@ -272,6 +282,8 @@ export const getSystemStatus = async (
             platform: os.platform(),
             uptime: convertHMS(os.uptime()),
         },
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
     }
 
     res.render('../views/admin/system.ejs', { renderdata })
@@ -293,4 +305,73 @@ function convertHMS(value: any) {
         seconds = '0' + seconds
     }
     return hours + ':' + minutes + ':' + seconds // Return is HH : MM : SS
+}
+export const AdminAddUser = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+    }
+
+    res.render('../views/admin/adduser.ejs', { renderdata })
+}
+
+export const AdminManageUser = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const getAllUser = await prisma.users.findMany({
+        select: {
+            id: true,
+            fullname: true,
+            email: true,
+            role: true,
+        },
+    })
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        getAllUser,
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+    }
+    console.log(renderdata.getAllUser.length)
+    res.render('../views/admin/user.ejs', { renderdata })
 }

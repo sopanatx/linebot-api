@@ -26,3 +26,5 @@ api.post('/getStudent', jsonParser, controller.getStudent)
 
 api.post('/update-class', jsonParser, controller.updateClass)
 api.get('/getserverinfo', jsonParser, controller.getServerInfo)
+api.post('/adduser', jsonParser, controller.AdminAddUser)
+api.get('/get-all-user', jsonParser, controller.getUser)
