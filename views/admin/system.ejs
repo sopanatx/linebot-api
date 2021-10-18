@@ -6,9 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
       <meta name="description" content="" />
       <meta name="author" content="" />
-
       <title>สถานะระบบ | Line bot Dashboard</title>
-
       <!-- Custom fonts for this template-->
       <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,10 +33,8 @@
                         </div>
                         <div class="sidebar-brand-text mx-3">Line Bot Admin</div>
                   </a>
-
                   <!-- Divider -->
                   <hr class="sidebar-divider my-0" />
-
                   <!-- Nav Item - Dashboard -->
                   <li class="nav-item active">
                         <a class="nav-link" href="/admin/dashboard">
@@ -46,15 +42,11 @@
                               <span>สถิติข้อมูล</span>
                         </a>
                   </li>
-
                   <!-- Divider -->
                   <hr class="sidebar-divider" />
-
                   <!-- Heading -->
-                  <div class="sidebar-heading">
-                        เมนู (สิทธิ์: <%= renderdata.roleName %>
+                  <div class="sidebar-heading"> เมนู (สิทธิ์: <%= renderdata.roleName %>
                   </div>
-
                   <!-- Nav Item - Pages Collapse Menu -->
                   <% if(renderdata.isAdmin){ %>
                         <li class="nav-item">
@@ -65,8 +57,6 @@
                               </a>
                               <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                                     data-parent="#accordionSidebar">
-
-
                                     <div class="bg-white py-2 collapse-inner rounded">
                                           <h6 class="collapse-header">เมนูผู้ดูแลระบบ</h6>
                                           <a class="collapse-item" href="/admin/users">จัดการอาจารย์</a>
@@ -79,8 +69,6 @@
                               </div>
                         </li>
                         <% } %>
-
-
                               <!-- Nav Item - Utilities Collapse Menu -->
                               <li class="nav-item">
                                     <a class="nav-link collapsed" href="#" data-toggle="collapse"
@@ -101,19 +89,14 @@
                                           </div>
                                     </div>
                               </li>
-
-
-
                               <!-- Divider -->
                               <hr class="sidebar-divider d-none d-md-block" />
-
                               <!-- Sidebar Toggler (Sidebar) -->
                               <div class="text-center d-none d-md-inline">
                                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                               </div>
             </ul>
             <!-- End of Sidebar -->
-
             <!-- Content Wrapper -->
             <div id="content-wrapper" class="d-flex flex-column">
                   <!-- Main Content -->
@@ -124,7 +107,6 @@
                               <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                                     <i class="fa fa-bars"></i>
                               </button>
-
                               <!-- Topbar Search -->
                               <form
                                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
@@ -139,7 +121,6 @@
                                           </div>
                                     </div>
                               </form>
-
                               <!-- Topbar Navbar -->
                               <ul class="navbar-nav ml-auto">
                                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -166,7 +147,6 @@
                                                 </form>
                                           </div>
                                     </li>
-
                                     <!-- Nav Item - Alerts -->
                                     <li class="nav-item dropdown no-arrow mx-1">
                                           <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -178,9 +158,7 @@
                                           <!-- Dropdown - Alerts -->
                                           <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                                 aria-labelledby="alertsDropdown">
-                                                <h6 class="dropdown-header">
-                                                      Alerts Center
-                                                </h6>
+                                                <h6 class="dropdown-header"> Alerts Center </h6>
                                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                                       <div class="mr-3">
                                                             <div class="icon-circle bg-primary">
@@ -220,7 +198,6 @@
                                                       All Alerts</a>
                                           </div>
                                     </li>
-
                                     <!-- Nav Item - Messages -->
                                     <li class="nav-item dropdown no-arrow mx-1">
                                           <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown"
@@ -233,9 +210,7 @@
                                           <!-- Dropdown - Messages -->
                                           <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                                 aria-labelledby="messagesDropdown">
-                                                <h6 class="dropdown-header">
-                                                      Message Center
-                                                </h6>
+                                                <h6 class="dropdown-header"> Message Center </h6>
                                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                                       <div class="dropdown-list-image mr-3">
                                                             <img class="rounded-circle" src="img/undraw_profile_1.svg"
@@ -292,9 +267,7 @@
                                                       More Messages</a>
                                           </div>
                                     </li>
-
                                     <div class="topbar-divider d-none d-sm-block"></div>
-
                                     <!-- Nav Item - User Information -->
                                     <li class="nav-item dropdown no-arrow">
                                           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -310,62 +283,49 @@
                                                 aria-labelledby="userDropdown">
                                                 <a class="dropdown-item" href="#">
                                                       <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                      จัดการบัญชี
-                                                </a>
+                                                      จัดการบัญชี </a>
                                                 <a class="dropdown-item" href="#">
                                                       <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                      ข้อมูลระบบ
-                                                </a>
+                                                      ข้อมูลระบบ </a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" href="/admin/logout">
                                                       <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                      Logout
-                                                </a>
+                                                      Logout </a>
                                           </div>
                                     </li>
                               </ul>
                         </nav>
                         <!-- End of Topbar -->
-
                         <!-- Begin Page Content -->
                         <div class="container-fluid">
                               <!-- Page Heading -->
                               <div class="d-sm-flex align-items-center justify-content-between mb-4">
                                     <h1 class="h3 mb-0 text-gray-800">สถานะระบบและข้อมูลเซิฟเวอร์</h1>
                                     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                                          onclick="getBackup()"><i class="fas fa-download fa-sm text-white-50"></i>
-                                          สำรองข้อมูล </a>
+                                          onclick="getBackup()">
+                                          <i class="fas fa-download fa-sm text-white-50"></i> สำรองข้อมูล </a>
                               </div>
-
-                              <p class="mb-4">
-                                    สถานะระบบและข้อมูลเซิฟเวอร์ สามารถตรวจสอบการทำการของระบบว่าทำการได้ปกติ
+                              <p class="mb-4"> สถานะระบบและข้อมูลเซิฟเวอร์ สามารถตรวจสอบการทำการของระบบว่าทำการได้ปกติ
                               </p>
                               <!-- Dropdown Card Example -->
                               <div class="card mb-4">
                                     <div class="card-header">สถานะระบบและข้อมูลเซิฟเวอร์</div>
                                     <div class="card-body">
-                                          <p class="text-gray-600">
-                                                CPU: <%= renderdata.system.cpu %>
+                                          <p class="text-gray-600"> CPU: <%= renderdata.system.cpu %>
                                           </p>
-                                          <p class="text-gray-600">
-                                                Hostname : <%= renderdata.system.hostname %>
+                                          <p class="text-gray-600"> Hostname : <%= renderdata.system.hostname %>
                                           </p>
-                                          <p class="text-gray-600">
-                                                Platform: <%= renderdata.system.platform %>
+                                          <p class="text-gray-600"> Platform: <%= renderdata.system.platform %>
                                           </p>
-                                          <p class="text-gray-600">
-                                                Uptime : <%= renderdata.system.uptime %>
+                                          <p class="text-gray-600"> Uptime : <%= renderdata.system.uptime %>
                                           </p>
-
                                     </div>
                               </div>
                         </div>
-
                   </div>
             </div>
       </div>
       <!-- End of Main Content -->
-
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
             <div class="container my-auto">
@@ -379,12 +339,10 @@
       <!-- End of Content Wrapper -->
       </div>
       <!-- End of Page Wrapper -->
-
       <!-- Scroll to Top Button-->
       <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
       </a>
-
       <!-- Logout Modal-->
       <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -405,15 +363,12 @@
                   </div>
             </div>
       </div>
-
-
       <script>
             function getBackup() {
                   axios({
                         method: 'get',
                         url: '/api/export-backup'
-                  }).then((result) => {
-                  }).catch((error) => {
+                  }).then((result) => { }).catch((error) => {
                         Swal.fire({
                               icon: 'error',
                               title: 'ดำเนินการไม่สำเร็จ',
@@ -428,7 +383,6 @@
                   const myParam = urlParams.get('id');
                   let subjectName = document.getElementById('subjectName').value;
                   console.log(myParam)
-
                   axios({
                         method: "post",
                         url: "/api/update-class",
@@ -443,27 +397,23 @@
                               text: `ปรับปรุงข้อมูลสำเร็จ`,
                         });
                         window.location = "/admin/class";
-                  })
-                        .catch((error) => {
-                              console.error(error);
-                              Swal.fire({
-                                    icon: "error",
-                                    title: "ดำเนินการไม่สำเร็จ",
-                                    text: `${error.response.data.message}`,
-                              });
+                  }).catch((error) => {
+                        console.error(error);
+                        Swal.fire({
+                              icon: "error",
+                              title: "ดำเนินการไม่สำเร็จ",
+                              text: `${error.response.data.message}`,
                         });
+                  });
             }
       </script>
-
       <!-- Bootstrap core JavaScript-->
       <script src="/static/vendor/jquery/jquery.min.js"></script>
       <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
       <!-- Core plugin JavaScript-->
       <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
-
       <!-- Custom scripts for all pages-->
-      <script src="/static/js/sb-admin-2.min.js"></script>
-</body>
+      <script src="/static/js/sb-admin-2.min.js"></script>undefined
+</body>undefined
 
 </html>
