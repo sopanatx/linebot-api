@@ -871,3 +871,122 @@ export const addClass = async (req: any, res: any): Promise<any> => {
         })
     }
 }
+
+export const AddStudentToClass = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'Unathorized',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { studentId, classId } = req.body
+    if (!studentId || !classId) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing studentId or classId in parameters',
+        })
+    }
+
+    const getStudent = await prisma.studentInfomation.findFirst({
+        where: {
+            studentId: studentId,
+        },
+    })
+
+    if (!getStudent) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่พบข้อมูลนักเรียนนี้',
+        })
+    }
+
+    const getClass = await prisma.subject.findMany({
+        where: {
+            subjectId: classId,
+        },
+    })
+
+    if (!getClass) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่พบข้อมูลรายวิชานี้',
+        })
+    }
+
+    try {
+        const create = await prisma.studentGrade.create({
+            data: {
+                studentId: studentId,
+                subjectId: classId,
+                grade: '',
+            },
+        })
+    } catch {}
+}
+
+export const updateStudentGrade = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'Unathorized',
+        })
+    }
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'Unauthorized',
+        })
+    }
+
+    const { id, grade, gradeType } = req.body
+
+    if (!id) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing id in parameters',
+        })
+    }
+
+    try {
+        const update = await prisma.studentGrade.update({
+            where: {
+                id: id,
+            },
+            data: {
+                grade: grade,
+                gradeType: gradeType,
+            },
+        })
+        return res.status(200).json({
+            status: 'success',
+            message: 'อัพเดทข้อมูลสำเร็จ',
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
+}
