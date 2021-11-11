@@ -11,16 +11,17 @@ generator client {
 }
 
 model Users {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   fullname  String
   email     String
   password  String
-  role      Role     @default(USER)
-  lastLogin DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  Subject Subject[]
+  role      Role      @default(USER)
+  lastLogin DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  profile   String?   @default("https://storage.itpsru.in.th/line-prod/profile.png")
+  contact   String?
+  Subject   Subject[]
 }
 
 model StudentInfomation {
@@ -48,7 +49,7 @@ model StudentGrade {
   subjectId String
   createdAt DateTime          @default(now())
   updatedAt DateTime          @default(now())
-  Student   StudentInfomation @relation(fields: [studentId], references: [id])
+  Student   StudentInfomation @relation(fields: [studentId], references: [studentId])
   Subject   Subject           @relation(fields: [subjectId], references: [subjectId])
 }
 
@@ -92,6 +93,7 @@ model MessageAutoSend {
   isSent     Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
+
 }
 
 model AutoPublish {
@@ -100,6 +102,13 @@ model AutoPublish {
   semester      String
   isPublished   Boolean  @default(false)
   updatedAt     DateTime @default(now())
+}
+
+model SystemConfig {
+  id            String   @id @default(uuid())
+  timeToPublish DateTime
+  semester      String
+  isPublished   Boolean  @default(false)
 }
 
 enum Role {

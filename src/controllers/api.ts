@@ -8,6 +8,43 @@ import passport from 'passport'
 import CryptoJS from 'crypto-js'
 import * as line from '@line/bot-sdk'
 import * as os from 'os'
+import { ConvertNumberToGrade } from 'src/utils/converter'
+import { ConvertNumberToNumberGrade } from 'src/utils/converter'
+
+/*
+    Error Code : 
+    3010    - ไม่พบข้อมูลนักศึกษา
+    3011    - ยังไม่ได้เข้าสู่ระบบ
+    3012    - ข้อมูลนักศึกษาไม่ถูกต้อง
+    3013    - access token ไม่ถูกต้อง
+    3014    - ข้อผิดพลาดอื่นๆ
+
+
+
+    5001 - Unauthorized
+    5002 - Forbidden
+    5003 - Not Found
+    5004 - Internal Server Error
+    5005 - Bad Request
+    5006 - Unprocessable Entity
+    5007 - Conflict 
+
+
+
+    8001 - Invalid Signature
+    8002 - Invalid Token
+
+
+    4001 - คะแนนไม่สามารถมากกว่า 100 ได้
+    4002 - คะแนนไม่สามารถน้อยกว่า 0 ได้
+    4003 - คะแนนไม่สามารถเป็นค่าว่างได้
+    4004 - เกรดเฉลี่ย ต้องอยู่ในรูปแบบ 0.00 - 4.00
+    4005 - เกรดต้องอยู่ในรูปแบบ A, B+, B, C+, C, D+, D, F,I
+
+    2001 - ส่งผลการเรียนประจำปี ไม่สำเร็จ
+    2002 - ส่งผลการเรียนประจำปี สำเร็จ
+    2003 - ######
+*/
 
 const client = new line.Client({
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
@@ -268,6 +305,7 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
         httpOnly: true, // The cookie only accessible by the web server
         signed: false,
     }
+
     await bcrypt.compare(password, getUser.password).then(async (result) => {
         if (result) {
             if (getUser.role == 'ADMIN') {
@@ -287,6 +325,14 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
                 res.cookie('token', encryptedToken, options)
                 //res.user = email;
 
+                await prisma.users.update({
+                    where: {
+                        id: getUser.id,
+                    },
+                    data: {
+                        lastLogin: new Date(),
+                    },
+                })
                 passport.authenticate('local', { successFlash: 'Welcome!' })
                 return res.status(200).json({
                     status: 'success',
@@ -900,7 +946,7 @@ export const AddStudentToClass = async (req: any, res: any): Promise<any> => {
         })
     }
 
-    const getStudent = await prisma.studentInfomation.findFirst({
+    const getStudent = await prisma.studentInfomation.findUnique({
         where: {
             studentId: studentId,
         },
@@ -926,6 +972,19 @@ export const AddStudentToClass = async (req: any, res: any): Promise<any> => {
         })
     }
 
+    const getStudentInClass = await prisma.studentGrade.findMany({
+        where: {
+            subjectId: classId,
+            studentId: studentId,
+        },
+    })
+
+    if (getStudentInClass.length >= 1) {
+        return res.status(409).json({
+            status: 'error',
+            message: 'มีข้อมูลนักเรียนนี้แล้วในรายวิชานี้',
+        })
+    }
     try {
         const create = await prisma.studentGrade.create({
             data: {
@@ -934,7 +993,17 @@ export const AddStudentToClass = async (req: any, res: any): Promise<any> => {
                 grade: '',
             },
         })
-    } catch {}
+        return res.status(200).json({
+            status: 'success',
+            message: 'สร้างข้อมูลนักเรียนเข้าร่วมรายวิชาสำเร็จ',
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            status: 'error',
+            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
 }
 
 export const updateStudentGrade = async (
@@ -960,7 +1029,7 @@ export const updateStudentGrade = async (
         })
     }
 
-    const { id, grade, gradeType } = req.body
+    const { id, point } = req.body
 
     if (!id) {
         return res.status(400).json({
@@ -975,8 +1044,8 @@ export const updateStudentGrade = async (
                 id: id,
             },
             data: {
-                grade: grade,
-                gradeType: gradeType,
+                grade: ConvertNumberToNumberGrade(point),
+                gradeType: ConvertNumberToGrade(point),
             },
         })
         return res.status(200).json({
@@ -986,7 +1055,185 @@ export const updateStudentGrade = async (
     } catch {
         return res.status(500).json({
             status: 'error',
-            message: 'ข้อผิดพลาดระหว่างประมวลผล',
+            message: 'ปรับปรุงข้อมูลไม่สำเร็จ / ข้อผิดพลาดในการประมวลผล。',
+        })
+    }
+
+    30
+}
+
+export const getMyAccountInfo = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'ไม่ได้รับอนุญาตเข้าถึง',
+        })
+    }
+
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'เซสชันหมดอายุ โปรดเข้าสู่ระบบใหม่อีกครั้ง',
+        })
+    }
+
+    const getAccount = await prisma.users.findFirst({
+        where: {
+            email: decryptedData.email,
+        },
+        select: {
+            fullname: true,
+            email: true,
+            role: true,
+            lastLogin: true,
+        },
+    })
+    if (!getAccount) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่พบข้อมูล',
+        })
+    }
+
+    return res.status(200).json({
+        status: 'OK',
+        requestTime: new Date().toLocaleString(),
+        getAccount,
+    })
+}
+
+export const updateMyAccountInfo = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'ไม่ได้รับอนุญาตเข้าถึง',
+        })
+    }
+
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'เซสซันหมดอายุ',
+        })
+    }
+
+    const { fullname, email, password } = req.body
+    if (!fullname || !email || !password) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing fullname, email or password in parameters',
+        })
+    }
+
+    const getAccount = await prisma.users.findFirst({
+        where: {
+            email: decryptedData.email,
+        },
+    })
+    if (!getAccount) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่พบข้อมูล',
+        })
+    }
+
+    try {
+        const update = await prisma.users.update({
+            where: {
+                id: getAccount.id,
+            },
+            data: {
+                fullname: fullname,
+                email: email,
+                password: password,
+            },
+        })
+        return res.status(200).json({
+            status: 'success',
+            message: 'ปรับปรุงข้อมูลสำเร็จ',
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'เกิดข้อผิดพลาดระหว่างประมวลผล',
+        })
+    }
+}
+
+export const AdminUpdateAccount = async (req: any, res: any): Promise<any> => {
+    if (!req.cookies.token) {
+        return res.status(401).json({
+            error_msg: 'UNAUTHORIZED',
+            status: 'error',
+            message: 'ไม่ได้รับอนุญาตเข้าถึง',
+        })
+    }
+
+    let token = req.cookies.token
+    const decrypted = CryptoJS.AES.decrypt(token, 'NW3mazd9Do7DQneaTFbiXxphJ')
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+
+    if (decryptedData.expired < Date.now()) {
+        return res.status(401).json({
+            code: 5001,
+            status: 'error',
+            message: 'เซสซันหมดอายุ โปรดเข้าสู่ระบบใหม่อีกครั้ง',
+        })
+    }
+
+    const { id, fullname, email, password } = req.body
+
+    if (!id || !fullname || !email || !password) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Missing fullname, email or password in parameters',
+        })
+    }
+
+    const getAccount = await prisma.users.findFirst({
+        where: {
+            id: id,
+        },
+    })
+
+    if (!getAccount) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'ไม่พบข้อมูลในฐานข้อมูล',
+        })
+    }
+
+    try {
+        const update = await prisma.users.update({
+            where: {
+                id: getAccount.id,
+            },
+            data: {
+                fullname: fullname,
+                email: email,
+                password: password,
+            },
+        })
+        return res.status(200).json({
+            status: 'success',
+            message: 'ปรับปรุงข้อมูลสำเร็จ',
+        })
+    } catch {
+        return res.status(500).json({
+            status: 'error',
+            message: 'ปรับปรุงข้อมูลไม่สำเร็จ / ข้อผิดพลาดในการประมวลผล',
         })
     }
 }

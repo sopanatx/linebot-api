@@ -20,6 +20,11 @@ const prisma = new PrismaClient()
 const client = new line.Client({
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
 })
+let options = {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true, // The cookie only accessible by the web server
+    signed: false,
+}
 export const AdminLoginView = async (
     req: Request,
     res: Response
@@ -478,4 +483,168 @@ export const AdminManageClass = async (req: Request, res: Response) => {
     }
     console.log(renderdata.class)
     res.render('../views/admin/class.ejs', { renderdata })
+}
+
+export const AdminManageSystem = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    res.setHeader('WWW-Authenticate', 'Basic')
+    res.cookie('loggedin', 'true')
+    const token = {
+        email: getUser.email,
+        expired: Date.now() + 3600000,
+    }
+    const encryptedToken = await CryptoJS.AES.encrypt(
+        JSON.stringify(token),
+        'NW3mazd9Do7DQneaTFbiXxphJ'
+    ).toString()
+    res.cookie('token', encryptedToken, options)
+
+    const getSemesterConfig = await prisma.systemConfig.findFirst()
+
+    console.log(getSemesterConfig)
+    if (!getSemesterConfig) {
+        res.status(500).send('Load Config ล้มเหลว กรุณาตั้งค่าระบบก่อน')
+    }
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+        getSemesterConfig,
+    }
+
+    res.render('../views/admin/server-settings.ejs', { renderdata })
+}
+
+export const addStudentToSubject = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const { subjectId } = req.query
+
+    if (!subjectId) {
+        return res.redirect('/admin/dashboard')
+    }
+    const getSubject = await prisma.subject.findUnique({
+        where: {
+            subjectId: subjectId?.toString(),
+        },
+    })
+
+    const getStudent = await prisma.studentInfomation.findMany({
+        select: {
+            id: true,
+            studentId: true,
+            firstname: true,
+            lastname: true,
+        },
+    })
+
+    if (!getSubject) {
+        return res.status(500).send('ไม่พบรหัสวิชา / ข้อมูลรายวิชานี้')
+    }
+
+    console.log(getStudent)
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+        getSubject,
+        getStudent,
+    }
+
+    return res.render('../views/admin/add-student-to-subject.ejs', {
+        renderdata,
+    })
+}
+
+export const manageStudentInClass = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const { subjectId } = req.query
+
+    if (!subjectId) {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const getClass = await prisma.studentGrade.findMany({
+        where: {
+            subjectId: subjectId?.toString(),
+        },
+        include: {
+            Subject: true,
+            Student: true,
+        },
+    })
+
+    if (getClass.length === 0) {
+        return res.status(404).send('ไม่พบรายวิชานี้')
+    }
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+        subjectName: getClass[0].Subject.subjectName,
+        subjectId: getClass[0].Subject.subjectId,
+        getClass,
+    }
+    console.log(renderdata.getClass[0].Student.firstname) ///
+    res.status(200).render('../views/admin/class-details.ejs', { renderdata })
 }

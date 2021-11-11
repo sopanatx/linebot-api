@@ -23,3 +23,10 @@ admin.get('/users', urlencodedParser, controller.AdminManageUser)
 admin.get('/add-student', urlencodedParser, controller.AdminAddStudent)
 admin.get('/student', urlencodedParser, controller.AdminManageStudent)
 admin.get('/manageclass', urlencodedParser, controller.AdminManageClass)
+admin.get('/settings', urlencodedParser, controller.AdminManageSystem)
+admin.get(
+    '/add-student-to-class',
+    urlencodedParser,
+    controller.addStudentToSubject
+)
+admin.get('/class-details', urlencodedParser, controller.manageStudentInClass)

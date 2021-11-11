@@ -1,18 +1,17 @@
 import express from 'express'
 import logger from 'morgan'
 import * as path from 'path'
-import * as bodyParser from 'body-parser'
 import { errorHandler, errorNotFoundHandler } from './middlewares/errorHandler'
 var session = require('express-session')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-import helmet from 'helmet'
 // Routes
 import { index } from './routes/index'
 import { api } from './routes/api'
 import { admin } from './routes/admin'
-import passport from 'passport'
+import { checkPublish, getTime } from './service/notifyService'
 // Create Express server
+const schedule = require('node-schedule')
 export const app = express()
 const port = process.env.PORT || 5001
 
@@ -37,3 +36,8 @@ app.use('/admin', admin)
 
 app.use(errorNotFoundHandler)
 app.use(errorHandler)
+
+// const job = schedule.scheduleJob('10 * * * * *', function () {
+//     console.log('[TASK] : --> Running DB Query')
+//     checkPublish()
+// })
