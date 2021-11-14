@@ -1029,7 +1029,7 @@ export const updateStudentGrade = async (
         })
     }
 
-    const { id, point } = req.body
+    const { id, point , subjectId } = req.body
 
     if (!id) {
         return res.status(400).json({
@@ -1039,9 +1039,10 @@ export const updateStudentGrade = async (
     }
 
     try {
-        const update = await prisma.studentGrade.update({
+        const update = await prisma.studentGrade.updateMany({
             where: {
-                id: id,
+                subjectId: subjectId,
+                studentId:id,
             },
             data: {
                 grade: ConvertNumberToNumberGrade(point),
@@ -1051,6 +1052,7 @@ export const updateStudentGrade = async (
         return res.status(200).json({
             status: 'success',
             message: 'อัพเดทข้อมูลสำเร็จ',
+            update,
         })
     } catch {
         return res.status(500).json({
