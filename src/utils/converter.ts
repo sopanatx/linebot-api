@@ -1,4 +1,4 @@
-export const ConvertNumberToGrade = (number: number) => {
+export const ConvertNumberToGrade = (number: number): string => {
     if (number >= 80) return 'A'
     if (number >= 75) return 'B+'
     if (number >= 70) return 'B'
@@ -9,7 +9,7 @@ export const ConvertNumberToGrade = (number: number) => {
     if (number < 50) return 'F'
 }
 
-export const ConvertNumberToNumberGrade = (number: number) => {
+export const ConvertNumberToNumberGrade = (number: number): string => {
     if (number >= 80) return '4.0'
     if (number >= 75) return '3.5'
     if (number >= 70) return '3.0'

@@ -8,8 +8,8 @@ import passport from 'passport'
 import CryptoJS from 'crypto-js'
 import * as line from '@line/bot-sdk'
 import * as os from 'os'
-import { ConvertNumberToGrade } from 'src/utils/converter'
-import { ConvertNumberToNumberGrade } from 'src/utils/converter'
+import { ConvertNumberToGrade } from '../utils/converter'
+import { ConvertNumberToNumberGrade } from '../utils/converter'
 
 /*
     Error Code : 
@@ -1029,7 +1029,7 @@ export const updateStudentGrade = async (
         })
     }
 
-    const { id, point , subjectId } = req.body
+    const { id, point, subjectId } = req.body
 
     if (!id) {
         return res.status(400).json({
@@ -1042,7 +1042,7 @@ export const updateStudentGrade = async (
         const update = await prisma.studentGrade.updateMany({
             where: {
                 subjectId: subjectId,
-                studentId:id,
+                studentId: id,
             },
             data: {
                 grade: ConvertNumberToNumberGrade(point),

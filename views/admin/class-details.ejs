@@ -328,13 +328,20 @@
                                                             </option>
                                                             <% } %>
                                                 </select>
-
-
-
                                                 <div class="form-group">
                                                       <label for="">คะแนน </label>
                                                       <input type="number" class="form-control" id="point"
                                                             aria-describedby="pointHelp" name="point" required>
+                                                </div>
+                                                <div class="card-body">
+                                                      <form>
+                                                            <div class="py-2">
+                                                                  <input class="btn btn-primary btn-user btn-block"
+                                                                        type="button" value="ปรับปรุงข้อมูล"
+                                                                        id="sendMsgBtn"
+                                                                        onclick="updateStudentGrade()" />
+                                                            </div>
+                                                      </form>
                                                 </div>
                                           </div>
                                     </div>
@@ -391,6 +398,39 @@
                               text: `${error.response.data.data}`,
                         })
                   });
+            }
+
+            function updateStudentGrade() {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const myParam = urlParams.get('subjectId');
+                  let studentId = $('#studentId').val();
+                  let point = $('#point').val();
+
+                  if (point > 100 || point < 0) {
+                        Swal.fire({
+                              icon: 'error',
+                              title: 'ดำเนินการไม่สำเร็จ',
+                              text: `คะแนนต้องมากกว่า 1 หรือน้อยกว่า 100`,
+                        })
+                        return;
+                  }
+
+                  axios({
+                        method: 'post',
+                        url: '/api/update-student-grade',
+                        data: {
+                              id: studentId,
+                              subjectId: myParam,
+                              point: point
+
+                        }
+                  }).then((result) => {
+                        Swal.fire({
+                              icon: 'success',
+                              title: 'ดำเนินการสำเร็จ',
+                              text: ``,
+                        })
+                  })
             }
       </script>
       <!-- Bootstrap core JavaScript-->
