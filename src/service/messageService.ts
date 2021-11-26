@@ -1,65 +1,111 @@
-import * as line from "@line/bot-sdk";
-import { PrismaClient } from "@prisma/client";
-import * as cron from "node-cron";
+import * as line from '@line/bot-sdk'
+import { PrismaClient } from '@prisma/client'
+import * as cron from 'node-cron'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 const client = new line.Client({
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-});
+})
 
 export const GetContact = async (
     userId: string,
     userMessage: string,
-    replyToken: string,
+    replyToken: string
 ): Promise<void> => {
     const message: any = [
         {
-            type: "text",
-            text: "หากมีข้อสงสัย ท่านสามารถติดต่อสาขาวิชาได้ ที่  : ######",
-        },
-        {
-            type: "template",
-            altText: "this is a buttons template",
+            type: 'template',
+            altText: 'this is a carousel template',
             template: {
-                type: "buttons",
-                thumbnailImageUrl:
-                    "https://www.howtogeek.com/wp-content/uploads/2021/01/Telegram-User-Making-a-Audio-and-Video-Call.png?height=200p&trim=2,2,2,2",
-                imageAspectRatio: "square",
-                imageSize: "cover",
-                imageBackgroundColor: "#FFFFFF",
-                title: "ช่องทางการติดต่อ",
-                text: "ท่านสามารถเลือกช่องทางการติดต่อสาขาวิชาได้ดังนี้",
-                actions: [
+                type: 'carousel',
+                columns: [
                     {
-                        type: "message",
-                        label: "โทร",
-                        text: "โทร",
+                        thumbnailImageUrl:
+                            'https://www.img.in.th/images/de18c636ceaeb5c959b9454f74401cb8.jpg',
+                        title: 'อาจารย์ ไพฑูรย์ งิ้วทั่ง',
+                        text: 'ประธานหลักสูตรสาขาวิชาเทคโนโลยีสารสนเทศ',
+                        actions: [
+                            {
+                                type: 'uri',
+                                label: 'ดูเพิ่มเติม',
+                                uri: 'https://itpsru.in.th/personal/',
+                            },
+                        ],
                     },
                     {
-                        type: "message",
-                        label: "อีเมล",
-                        text: "อีเมล",
+                        thumbnailImageUrl:
+                            'https://www.img.in.th/images/fe141ae4faab6a378cd11733a3ac6b70.jpg',
+                        title: 'ผู้ช่วยศาสตราจารย์ ดร.กิตติพงษ์ สุวรรณรา',
+                        text: 'กรรมการประจําหลักสูตร, ผู้ช่วยอธิการบดีฝ่ายเทคโนโลยีสารสนเทศ',
+                        actions: [
+                            {
+                                type: 'uri',
+                                label: 'ดูเพิ่มเติม',
+                                uri: 'https://itpsru.in.th/personal/',
+                            },
+                        ],
+                    },
+                    {
+                        thumbnailImageUrl:
+                            'https://www.img.in.th/images/ca6c5ba69147551ac59ebca701cd522f.jpg',
+                        title: 'อาจารย์ พงษ์พิชญ์ เลิศเจริญวุฒา',
+                        text: 'กรรมการประจําหลักสูตร',
+                        actions: [
+                            {
+                                type: 'uri',
+                                label: 'ดูเพิ่มเติม',
+                                uri: 'https://itpsru.in.th/personal/',
+                            },
+                        ],
+                    },
+                    {
+                        thumbnailImageUrl:
+                            'https://www.img.in.th/images/e8b36b4a42b1bad3d24d916d0d793bf6.jpg',
+                        title: 'อาจารย์ ธงรบ อักษร',
+                        text: 'กรรมการประจําหลักสูตร',
+                        actions: [
+                            {
+                                type: 'uri',
+                                label: 'ดูเพิ่มเติม',
+                                uri: 'https://itpsru.in.th/personal/',
+                            },
+                        ],
+                    },
+                    {
+                        thumbnailImageUrl:
+                            'https://www.img.in.th/images/1f8076745d1dd4b0c381ebca07c69be8.jpg',
+                        title: 'ผู้ช่วยศาสตราจารย์ ภาวินี อินทร์ทอง',
+                        text: 'กรรมการหลักสูตร',
+                        actions: [
+                            {
+                                type: 'uri',
+                                label: 'ดูเพิ่มเติม',
+                                uri: 'https://itpsru.in.th/personal/',
+                            },
+                        ],
                     },
                 ],
             },
         },
-        {
-            type: "audio",
-            originalContentUrl:
-                "https://storage.itpsru.in.th/sar-dev/static_audio_not-my-senpai.mp3",
-            duration: 3000,
-        },
-    ];
+    ]
     client
         .replyMessage(replyToken, message)
         .then(() => {
             console.log(
-                "Message has been reply to : %s  | Sent At : %d",
+                'Message has been reply to : %s  | Sent At : %d',
                 userId,
-                Date.now(),
-            );
+                Date.now()
+            )
         })
-        .catch(err => {
-            console.error("Failed to reply message:", err);
-        });
-};
+        .catch((err) => {
+            console.error('Failed to reply message:', err)
+        })
+}
+export const GetStudentGrade = async (studentId: number): Promise<void> => {
+    const getGrade = await prisma.studentGrade.findMany({
+        where: {
+            studentId: studentId?.toString(),
+        },
+    })
+    console.log(getGrade)
+}

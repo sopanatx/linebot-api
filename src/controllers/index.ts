@@ -37,7 +37,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
         )
         console.log(req.body.events[0])
         switch (userMessage) {
-            case 'ติดต่ออาจารย์ประจําสาขา':
+            case 'ติดต่ออาจารย์ประจำสาขา':
+                console.log('RECEIVED : ติดต่ออาจารย์ประจําสาขา ')
                 await prisma.messageLog.create({
                     data: {
                         userId: userId,
@@ -46,6 +47,20 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
                     },
                 })
                 return await GetContact(userId, userMessage, replyToken)
+                break
+            case 'ตรวจสอบผลการเรียน':
+                await prisma.messageLog.create({
+                    data: {
+                        userId: userId,
+                        message: userMessage,
+                        isCorrect: true,
+                    },
+                })
+                // const getStudentId = await prisma.studentInfomation.findOne({
+                //     where: {
+
+                //     }
+                // })
                 break
             default:
                 // await prisma.messageLog.create({
@@ -90,4 +105,3 @@ export const LoginView = async (req: Request, res: Response): Promise<void> => {
     const time = momentTZ().format('DD MMMM YYYY HH:MM')
     res.render('../views/login.ejs', { time })
 }
-
