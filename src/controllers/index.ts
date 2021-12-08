@@ -56,11 +56,19 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
                         isCorrect: true,
                     },
                 })
-                // const getStudentId = await prisma.studentInfomation.findOne({
-                //     where: {
+                const getStudent = await prisma.studentInfomation.findFirst({
+                    where: {
+                        lineUserId: userId,
+                    },
+                })
 
-                //     }
-                // })
+                if (!getStudent) {
+                    client.replyMessage(replyToken, {
+                        type: 'text',
+                        text: 'ไม่พบข้อมูลการเข้าสู่ระบบ โปรดเข้าสู่ระบบก่อนการใช้งาน',
+                    })
+                    return
+                }
                 break
             default:
                 // await prisma.messageLog.create({

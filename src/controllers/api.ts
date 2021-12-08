@@ -837,8 +837,8 @@ export const addStudent = async (req: any, res: any): Promise<any> => {
     try {
         const create = await prisma.studentInfomation.create({
             data: {
-                studentId: String(studentId),
-                idCard: idcard,
+                studentId: studentId,
+                idCard: String(idcard),
                 firstname: firstname,
                 lastname: lastname,
             },
@@ -848,7 +848,8 @@ export const addStudent = async (req: any, res: any): Promise<any> => {
             status: 'success',
             message: 'สร้างข้อมูลนักเรียนสำเร็จ',
         })
-    } catch {
+    } catch (e) {
+        console.log(e)
         return res.status(500).json({
             status: 'error',
             message: 'ข้อผิดพลาดระหว่างประมวลผล',

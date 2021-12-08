@@ -17,6 +17,6 @@ const config = {
 }
 index.get('/', controller.index)
 index.post('/webhook', middleware(config), controller.webhook)
-index.post('/callback', middleware(config), controller.Callback)
+index.get('/callback', middleware(config), controller.Callback)
 index.get('/liff-apps', urlencodedParser, controller.liffApps)
 index.get('/login', urlencodedParser, controller.LoginView)
