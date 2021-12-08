@@ -1,22 +1,22 @@
-window.onload = function () {
+window.onload = function() {
     const useNodeJS = true // if you are not using a node server, set this value to false
-    const defaultLiffId = '1656487149-D51gEMmn' // change the default LIFF value if you are not using a node server
+    const defaultLiffId = '1656420524-dQkB2GQV' // change the default LIFF value if you are not using a node server
 
     // DO NOT CHANGE THIS
-    let myLiffId = '1656487149-D51gEMmn'
+    let myLiffId = '1656420524-dQkB2GQV'
 
     // if node is used, fetch the environment variable and pass it to the LIFF method
     // otherwise, pass defaultLiffId
     if (useNodeJS) {
         fetch('/api/get-liff-id')
-            .then(function (reqResponse) {
+            .then(function(reqResponse) {
                 return reqResponse.json()
             })
-            .then(function (jsonResponse) {
+            .then(function(jsonResponse) {
                 myLiffId = jsonResponse.id
                 initializeLiffOrDie(myLiffId)
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 document
                     .getElementById('liffAppContent')
                     .classList.add('hidden')
@@ -48,8 +48,8 @@ function initializeLiffOrDie(myLiffId) {
  */
 function initializeLiff(myLiffId) {
     liff.init({
-        liffId: myLiffId,
-    })
+            liffId: myLiffId,
+        })
         .then(() => {
             // start to use LIFF's api
             initializeApp()
@@ -64,6 +64,7 @@ function initializeApp() {
     displayLiffData()
     registerButtonHandlers()
 }
+
 function displayLiffData() {
     //alert(liff.getOS());
     if (!liff.isLoggedIn()) {
@@ -93,7 +94,7 @@ function displayLiffData() {
         // closeWindow call
         document
             .getElementById('closeWindowButton')
-            .addEventListener('click', function () {
+            .addEventListener('click', function() {
                 if (!liff.isInClient()) {
                     sendAlertIfNotInClient()
                 } else {
@@ -102,29 +103,30 @@ function displayLiffData() {
             })
     }
 }
+
 function getLogin() {
     let accessToken = liff.getAccessToken()
     let idcard = document.getElementById('idcard').value
     console.log(accessToken)
     axios({
-        method: 'post',
-        url: '/api/login',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        data: {
-            idcard: idcard,
-            accessToken: accessToken,
-        },
-    })
-        .then(function (response) {
+            method: 'post',
+            url: '/api/login',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: {
+                idcard: idcard,
+                accessToken: accessToken,
+            },
+        })
+        .then(function(response) {
             console.log(response.data['code'])
             if (response.data['code'] == 7001) {
                 alert(`เข้าสู่ระบบสำเร็จ ${response.data.data['studentName']}`)
             }
             location.replace('/liff-apps')
         })
-        .catch(function (error) {
+        .catch(function(error) {
             alert('ไม่สามารถเข้าสู่ระบบได้ เนื่องจากข้อมูลไม่ถูกต้อง')
         })
 }
