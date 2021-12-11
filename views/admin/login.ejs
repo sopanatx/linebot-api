@@ -1,142 +1,131 @@
 <html lang="en">
 
 <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <title>Login</title>
-      <!-- Custom fonts for this template-->
-      <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap" rel="stylesheet">
-      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-      <style>
-            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap');
-      </style>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-      <style>
-            /* already defined in bootstrap4 */
-            .text-xs-center {
-                  text-align: center;
-            }
-
-            .g-recaptcha {
-                  display: inline-block;
-            }
-      </style>
-      <!-- Custom styles for this template-->
-      <link href="/static/css/sb-admin-2.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Login</title>
+    <!-- Custom fonts for this template-->
+    <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&display=swap');
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        /* already defined in bootstrap4 */
+        
+        .text-xs-center {
+            text-align: center;
+        }
+        
+        .g-recaptcha {
+            display: inline-block;
+        }
+    </style>
+    <!-- Custom styles for this template-->
+    <link href="/static/css/sb-admin-2.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-primary">
-      <div class="container">
-            <!-- Outer Row -->
-            <div class="row justify-content-center">
-                  <div class="col-xl-10 col-lg-12 col-md-9">
-                        <div class="card o-hidden border-0 shadow-lg my-5">
-                              <div class="card-body p-0">
-                                    <!-- Nested Row within Card Body -->
-                                    <div class="row">
-                                          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                                          <div class="col-lg-6">
-                                                <div class="p-5">
-                                                      <div class="text-center">
-                                                            <h1 class="h4 text-gray-900 mb-4">
-                                                                  เข้าสู่ระบบสำหรับอาจารย์และเจ้าหน้าที่</h1>
-                                                      </div>
-                                                      <form class="user">
-                                                            <div class="form-group">
-                                                                  <input type="text"
-                                                                        class="form-control form-control-user"
-                                                                        id="username" aria-describedby="username"
-                                                                        placeholder="กรอกชื่อผู้ใช้งาน">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                  <input type="password"
-                                                                        class="form-control form-control-user"
-                                                                        id="password" placeholder="กรอกรหัสผ่านผู้ใช้">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                  <div class="custom-control custom-checkbox small">
-                                                                        <input type="checkbox"
-                                                                              class="custom-control-input"
-                                                                              id="customCheck">
-                                                                        <label class="custom-control-label"
-                                                                              for="customCheck">จดจำการเข้าใช้งาน</label>
-                                                                  </div>
-                                                            </div>
-                                                            <div class="text-xs-center">
-                                                                  <div class="g-recaptcha"
-                                                                        data-sitekey='<%= recaptcha_site %>'
-                                                                        data-callback="enableBtn">
-                                                                  </div>
-                                                            </div>
-                                                            <input class="btn btn-primary btn-user btn-block"
-                                                                  type="button" value="เข้าสู่ระบบ" id="button1"
-                                                                  onclick="login()" disabled="disabled">
-                                                      </form>
-                                                      <hr>
-                                                </div>
-                                          </div>
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">
+                                            เข้าสู่ระบบสำหรับอาจารย์และเจ้าหน้าที่</h1>
                                     </div>
-                              </div>
+                                    <form class="user">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="username" aria-describedby="username" placeholder="กรอกชื่อผู้ใช้งาน">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="password" placeholder="กรอกรหัสผ่านผู้ใช้">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <label class="custom-control-label" for="customCheck">จดจำการเข้าใช้งาน</label>
+                                            </div>
+                                        </div>
+                                        <div class="text-xs-center">
+                                            <div class="g-recaptcha" data-sitekey='<%= recaptcha_site %>' data-callback="enableBtn">
+                                            </div>
+                                        </div>
+                                        <input class="btn btn-primary btn-user btn-block" type="button" value="เข้าสู่ระบบ" id="button1" onclick="login()" disabled="disabled">
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
                         </div>
-                  </div>
+                    </div>
+                </div>
             </div>
-      </div>
-      <script>
-            function enableBtn() {
-                  document.getElementById("button1").disabled = false;
+        </div>
+    </div>
+    <script>
+        function enableBtn() {
+            document.getElementById("button1").disabled = false;
+        }
+    </script>
+    <script>
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var recaptcha = grecaptcha.getResponse();
+            if (recaptcha.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ผิดพลาด',
+                    text: 'กรุณายืนยัน reCaptcha อีกครั้ง',
+                })
+                return;
             }
-      </script>
-      <script>
-            function login() {
-                  var username = document.getElementById("username").value;
-                  var password = document.getElementById("password").value;
-                  var recaptcha = grecaptcha.getResponse();
-                  if (recaptcha.length === 0) {
-                        Swal.fire({
-                              icon: 'warning',
-                              title: 'ผิดพลาด',
-                              text: 'กรุณายืนยัน reCaptcha อีกครั้ง',
-                        })
-                        return;
-                  }
-                  axios({
-                        method: 'post',
-                        url: '/api/auth/admin',
-                        data: {
-                              username: username,
-                              password: password,
-                              recaptcha_response: recaptcha
-                        }
-                  }).then((result) => {
-                        Swal.fire({
-                              icon: 'success',
-                              title: 'เข้าสู่ระบบสำเร็จ',
-                              text: `เข้าสู่ระบบสำเร็จในชื่อ : ${result.data.name}`,
-                        }).then(function () {
-                              window.location = "/admin/dashboard";
-                        });
-                  }).catch((error) => {
-                        Swal.fire({
-                              icon: 'error',
-                              title: 'เข้าสู่ระบบล้มเหลว',
-                              text: `${error.response.data.message}`,
-                        })
-                        grecaptcha.reset();
-                  });
-            }
-      </script>
-      <!-- Bootstrap core JavaScript-->
-      <script src="/static/vendor/jquery/jquery.min.js"></script>
-      <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- Core plugin JavaScript-->
-      <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
-      <!-- Custom scripts for all pages-->
-      <script src="/static/js/sb-admin-2.min.js"></script>
+            axios({
+                method: 'post',
+                url: '/api/auth/admin',
+                data: {
+                    username: username,
+                    password: password,
+                    recaptcha_response: recaptcha
+                }
+            }).then((result) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'เข้าสู่ระบบสำเร็จ',
+                    text: `เข้าสู่ระบบสำเร็จในชื่อ : ${result.data.name}`,
+                }).then(function() {
+                    window.location = "/admin/dashboard";
+                });
+            }).catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เข้าสู่ระบบล้มเหลว',
+                    text: `${error.response.data.message}`,
+                })
+                grecaptcha.reset();
+            });
+        }
+    </script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="/static/js/sb-admin-2.min.js"></script>
 </body>
 
 </html>

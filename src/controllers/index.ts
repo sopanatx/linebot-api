@@ -37,7 +37,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
         )
         console.log(req.body.events[0])
         switch (userMessage) {
-            case 'ติดต่ออาจารย์ประจำสาขา':
+            case 'ติดต่ออาจารย์ประจำสาขาวิชา':
                 console.log('RECEIVED : ติดต่ออาจารย์ประจําสาขา ')
                 await prisma.messageLog.create({
                     data: {
@@ -56,12 +56,14 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
                         isCorrect: true,
                     },
                 })
+
                 const getStudent = await prisma.studentInfomation.findFirst({
                     where: {
                         lineUserId: userId,
                     },
                 })
-
+                console.log('GET_ID : %s ', userId)
+                console.log('GET_STUDENT : %s ', getStudent)
                 if (!getStudent) {
                     client.replyMessage(replyToken, {
                         type: 'text',

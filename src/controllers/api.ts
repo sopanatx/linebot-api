@@ -168,6 +168,7 @@ export const ApiCheckLogin = async (
                     authorization: `Bearer ${lineaccesstoken}`,
                 },
             })
+            console.log(profile.data)
             const getLogin = await prisma.studentInfomation.findFirst({
                 where: {
                     lineUserId: profile.data['userId'],
@@ -180,6 +181,7 @@ export const ApiCheckLogin = async (
                     isLoggedIn: true,
                 },
             })
+
             res.json({
                 code: 7001,
                 message: 'Login Success',
@@ -301,9 +303,10 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
         })
     }
     let options = {
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24 * 24,
         httpOnly: true, // The cookie only accessible by the web server
         signed: false,
+        // max-age: 40000,
     }
 
     await bcrypt.compare(password, getUser.password).then(async (result) => {
