@@ -552,9 +552,7 @@ export const addStudentToSubject = async (req: Request, res: Response) => {
         },
     })
 
-    if (getUser.role !== 'ADMIN') {
-        return res.redirect('/admin/dashboard')
-    }
+    
 
     const { subjectId } = req.query
 
