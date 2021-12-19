@@ -595,6 +595,44 @@ export const addStudentToSubject = async (req: Request, res: Response) => {
     })
 }
 
+export const adminAddClass = async (req: Request, res: Response) => {
+    if (!req.cookies.token) {
+        return res.redirect('/admin/login')
+    }
+    const getDecodeToken = await ValidationToken(req.cookies.token)
+    if (getDecodeToken.isError) {
+        return res.redirect('/admin/login')
+    }
+
+    const getEmail = getDecodeToken.email
+
+    const getUser = await prisma.users.findFirst({
+        where: {
+            email: getEmail,
+        },
+    })
+    const getTeacher = await prisma.users.findMany({
+        select: {
+            id: true,
+            fullname: true,
+        },
+    })
+
+    if (getUser.role !== 'ADMIN') {
+        return res.redirect('/admin/dashboard')
+    }
+
+    const renderdata = {
+        fullname: getUser.fullname,
+        isAdmin: getUser.role === 'ADMIN' ? true : false,
+        roleName: getUser.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'อาจารย์',
+        version: process.env.APP_VERSION ? process.env.APP_VERSION : '1.0.0',
+        getTeacher,
+    }
+
+    return res.render('../views/admin/add-class.ejs', { renderdata })
+}
+
 export const manageStudentInClass = async (req: Request, res: Response) => {
     if (!req.cookies.token) {
         return res.redirect('/admin/login')

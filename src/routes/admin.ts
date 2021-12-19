@@ -30,3 +30,4 @@ admin.get(
     controller.addStudentToSubject
 )
 admin.get('/class-details', urlencodedParser, controller.manageStudentInClass)
+admin.get('/add-class', urlencodedParser, controller.adminAddClass)
