@@ -311,7 +311,7 @@ export const authAdmin = async (req: any, res: any): Promise<any> => {
 
     await bcrypt.compare(password, getUser.password).then(async (result) => {
         if (result) {
-            if (getUser.role == 'ADMIN') {
+            if (getUser.role == 'ADMIN' || getUser.role == 'TEACHER') {
                 // let sess = req.session;
                 // sess.user = getUser.id;
                 //   req.session.logedin = true;

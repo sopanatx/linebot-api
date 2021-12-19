@@ -88,9 +88,10 @@
                                                 <div class="table-responsive">
                                                       <select class="form-control" id="studentId"
                                                             onchange="enableBtn()">
-                                                            <% for(var i=0; i < renderdata.getClass.length; i++) { %>
-                                                                  <option selected disabled>เลือกรายชื่อ</option>
+                                                              
                                                                   <option
+                                                            <% for(var i=0; i < renderdata.getClass.length; i++) { %>
+                                                                
                                                                         value="<%= renderdata.getClass[i].Student.studentId %>">
                                                                         <%= renderdata.getClass[i].Student.studentId %>
                                                                               <%= renderdata.getClass[i].Student.firstname
