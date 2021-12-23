@@ -10,109 +10,52 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Users {
-  id        Int       @id @default(autoincrement())
-  fullname  String
-  email     String
+model admin {
+  id        Int      @id @default(autoincrement())
+  user      String
   password  String
-  role      Role      @default(USER)
-  lastLogin DateTime  @default(now())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  profile   String?   @default("https://storage.itpsru.in.th/line-prod/profile.png")
-  contact   String?
-  Subject   Subject[]
+  fullname  String
+  lastLogin DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
-model StudentInfomation {
-  id          String   @id @default(uuid())
-  studentId   String   @unique
-  idCard      String?  @unique
-  firstname   String
-  lastname    String
-  studentType Int      @default(1)
-  isLoggedIn  Boolean  @default(false)
-  lineUserId  String?  @unique
-  addedAt     DateTime @default(now())
-  updatedAt   DateTime @default(now())
-
-  StudentGrade StudentGrade[]
-  ClassJoined  ClassJoined[]
-
+model room {
+  id          Int           @id @default(autoincrement())
+  name        String //ชื่อห้องพัก
+  roomType    String //ประเภทห้องพัก
+  price       Int //ราคาห้องพัก
+  isAvailable Boolean       @default(true) //สถานะห้องพัก
+  imageUrl    String? //รูปภาพห้องพัก
+  reservation reservation[]
 }
 
-model StudentGrade {
-  id        String            @id @default(uuid())
-  studentId String
-  grade     String //
-  gradeType String?
-  subjectId String
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now())
-  Student   StudentInfomation @relation(fields: [studentId], references: [studentId])
-  Subject   Subject           @relation(fields: [subjectId], references: [subjectId])
+model reservation {
+  id              String       @id @default(cuid())
+  reservationDate DateTime // วันที่ทำการจอง
+  roomId          Int // ห้องที่จอง
+  checkInDate     DateTime? // วันที่เข้าพัก
+  checkOutDate    DateTime? // วันที่ออก
+  customerId      String //รหัสลูกค้า
+  paymentType     PAYMENT_TYPE // ประเภทการชำระเงิน
+  isCheckedIn     Boolean      @default(false) // สถานะการเข้าพัก
+  isCanceled      Boolean      @default(false) // สถานะการยกเลิกการจอง
+  isPaymentDone   Boolean      @default(false) //จ่ายเงินสำเร็จ
+  bookingDate     DateTime     @default(now()) //วันที่ทำรายการ
+  Customer        customer     @relation(fields: [customerId], references: [id])
+  Room            room         @relation(fields: [roomId], references: [id])
+  paymentTime     DateTime? // วันที่ทำการจ่ายเงิน
 }
 
-model Subject {
-  id           String         @id @default(uuid())
-  subjectId    String         @unique
-  subjectName  String
-  semester     String
-  teacherId    Int
-  StudentGrade StudentGrade[]
-  Teacher      Users          @relation(fields: [teacherId], references: [id])
-  ClassJoined  ClassJoined[]
+model customer {
+  id          String        @id @default(cuid())
+  name        String //ชื่อลูกค้า
+  phone       String //เบอร์โทรศัพท์
+  lineId      String // Line Unique Id สำหรับส่งการแจ้งเตือนหาลูกค้า
+  reservation reservation[]
 }
 
-// ข้อมูลช่วงเวลาที่ User ขอข้อมูล / สอบถาม
-model MessageLog {
-  id        String   @id @default(uuid())
-  userId    String // user ที่สอบถามเข้ามา
-  message   String // ข้อความที่สอบถามเข้ามา
-  isCorrect Boolean  @default(false) // ข้อความถูกต้องหรือใหม่
-  createdAt DateTime @default(now()) // ช่วงเวลาทีระบบได้รับข้อมูล
-}
-
-model ClassJoined {
-  id            String   @id @default(uuid())
-  studentId     String
-  subjectId     String
-  hasOverAbsent Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
-
-  Student StudentInfomation @relation(fields: [studentId], references: [id])
-  Subject Subject           @relation(fields: [subjectId], references: [subjectId])
-}
-
-model MessageAutoSend {
-  id         String   @id @default(uuid())
-  teacherId  String //ADMIN
-  message    String
-  timeToSend DateTime
-  isSent     Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-
-}
-
-model AutoPublish {
-  id            String   @id @default(uuid())
-  timeToPublish DateTime
-  semester      String
-  isPublished   Boolean  @default(false)
-  updatedAt     DateTime @default(now())
-}
-
-model SystemConfig {
-  id            String   @id @default(uuid())
-  timeToPublish DateTime
-  semester      String
-  isPublished   Boolean  @default(false)
-}
-
-enum Role {
-  ADMIN
-  USER
-  TEACHER
+enum PAYMENT_TYPE {
+  PROMTPAY
+  CASH
 }
